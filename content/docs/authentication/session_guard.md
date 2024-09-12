@@ -140,7 +140,7 @@ router
 
 ## ログイン済みのユーザーへのアクセス
 
-`auth.user`プロパティを使用して、ログイン済みのユーザーインスタンスにアクセスできます。この値は、`auth`ミドルウェアを使用するか、`auth.authenticate`または`auth.check`メソッドを手動で呼び出した場合にのみ利用できます。
+`auth.user`プロパティを使用して、ログイン済みのユーザーインスタンスにアクセスできます。この値は、`auth`または`silent_auth`ミドルウェアを使用するか、`auth.authenticate`または`auth.check`メソッドを手動で呼び出した場合にのみ利用できます。
 
 ```ts
 // title: authミドルウェアを使用する
@@ -175,6 +175,24 @@ router
     await auth.user!.getAllMetrics()
     // highlight-end
   })
+```
+
+### サイレント認証ミドルウェア
+
+`silent_auth`ミドルウェアは`auth`ミドルウェアと似ていますが、ユーザーが認証されていない場合に例外を投げません。代わりに、リクエストは通常通り続行されます。
+
+このミドルウェアは、ユーザーを常に認証して何らかのアクションを実行したいが、ユーザーが認証されていない場合にリクエストをブロックしたくない場合に便利です。
+
+このミドルウェアを使用する予定がある場合は、[ルーターミドルウェア](../basics/middleware.md#router-middleware-stack)のリストに登録する必要があります。
+
+```ts
+// title: start/kernel.ts
+import router from '@adonisjs/core/services/router'
+
+router.use([
+  // ...
+  () => import('app/middleware/silent_auth')
+])
 ```
 
 ### リクエストが認証されているかどうかを確認する

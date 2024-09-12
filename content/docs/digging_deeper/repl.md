@@ -99,7 +99,7 @@ p                     関数をプロミス化します。Node.jsの"util.promis
 デモンストレーションのために、[preloadファイル](../concepts/adonisrc_file.md#preloads)を作成し、`./app/models`ディレクトリからすべてのモデルをインポートするメソッドを定義します。
 
 ```sh
-node ace make:preload repl --env=repl
+node ace make:preload repl -e=repl
 ```
 
 ```ts

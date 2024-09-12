@@ -45,8 +45,7 @@ import { defineConfig } from '@adonisjs/transmit'
 
 export default defineConfig({
   pingInterval: false,
-  transport: null
-  // routeHandlerModifier(route: Route) {}
+  transport: null,
 })
 ```
 
@@ -85,6 +84,7 @@ export default defineConfig({
       host: env.get('REDIS_HOST'),
       port: env.get('REDIS_PORT'),
       password: env.get('REDIS_PASSWORD'),
+      keyPrefix: 'transmit',
     })
   }
 })
@@ -96,41 +96,49 @@ export default defineConfig({
 
 </dd>
 
-<dt>
+</dl>
 
-routeHandlerModifier
+## Register Routes
 
-</dt>
-
-<dd>
-
-トランスミットルートを登録する前に呼び出される関数です。ルートインスタンスが渡されます。この関数を使用してカスタムミドルウェアを追加したり、ルートハンドラを変更したりするために使用します。
-
-たとえば、[`Rate Limiter`](../security/rate_limiting.md)と認証ミドルウェアを使用して、一部のトランスミットルートの乱用を防ぐために使用できます。
+クライアントがサーバーに接続できるようにするためには、transmitルートを登録する必要があります。ルートは手動で登録されます。
 
 ```ts
-import { defineConfig } from '@adonisjs/transmit'
-import { throttle } from '#start/limiter'
+// title: start/routes.ts
+import transmit from '@adonisjs/transmit/services/main'
 
-export default defineConfig({
-  async routeHandlerModifier(route) {
-    const { middleware } = await import('#start/kernel')
-    
-    // クライアントを登録するために認証されていることを確認してください
+transmit.registerRoutes()
+````
+
+各ルートを手動でコントローラーにバインドして手動で登録することもできます。
+
+```ts
+// title: start/routes.ts
+const EventStreamController = () => import('@adonisjs/transmit/controllers/event_stream_controller')
+const SubscribeController = () => import('@adonisjs/transmit/controllers/subscribe_controller')
+const UnsubscribeController = () => import('@adonisjs/transmit/controllers/unsubscribe_controller')
+
+router.get('/__transmit/events', [EventStreamController])
+router.post('/__transmit/subscribe', [SubscribeController])
+router.post('/__transmit/unsubscribe', [UnsubscribeController])
+```
+
+ルート定義を変更して、たとえば[`Rate Limiter`](../security/rate_limiting.md)や認証ミドルウェアを使用して一部のtransmitルートの乱用を防ぎたい場合は、ルート定義を変更するか、`transmit.registerRoutes`メソッドにコールバックを渡すことができます。
+
+```ts
+// title: start/routes.ts
+import transmit from '@adonisjs/transmit/services/main'
+
+transmit.registerRoutes((route) => {
+  // クライアントを登録するために認証されていることを確認します
     if (route.getPattern() === '__transmit/events') {
       route.middleware(middleware.auth())
       return
     }
-    
-    // 他のトランスミットルートにスロットルミドルウェアを追加します
+
+    // 他のtransmitルートにスロットルミドルウェアを追加できます
     route.use(throttle)
-  }
 })
 ```
-
-</dd>
-
-</dl>
 
 ## チャンネル
 
@@ -154,7 +162,7 @@ transmit.broadcast('users/1', { message: 'Hello' })
 
 ### チャンネルの認証
 
-`authorizeChannel`メソッドを使用して、チャンネルへの接続を承認または拒否できます。このメソッドはチャンネル名と`HttpContext`を受け取り、真偽値を返す必要があります。
+`authorize`メソッドを使用して、チャンネルへの接続を承認または拒否できます。このメソッドはチャンネル名と`HttpContext`を受け取り、真偽値を返す必要があります。
 
 ```ts
 // title: start/transmit.ts
@@ -163,11 +171,11 @@ import transmit from '@adonisjs/transmit/services/main'
 import Chat from '#models/chat'
 import type { HttpContext } from '@adonisjs/core/http'
 
-transmit.authorizeChannel<{ id: string }>('users/:id', (ctx: HttpContext, { id }) => {
+transmit.authorize<{ id: string }>('users/:id', (ctx: HttpContext, { id }) => {
   return ctx.auth.user?.id === +id
 })
 
-transmit.authorizeChannel<{ id: string }>('chats/:id/messages', async (ctx: HttpContext, { id }) => {
+transmit.authorize<{ id: string }>('chats/:id/messages', async (ctx: HttpContext, { id }) => {
   const chat = await Chat.findOrFail(+id)
   
   return ctx.bouncer.allows('accessChat', chat)
