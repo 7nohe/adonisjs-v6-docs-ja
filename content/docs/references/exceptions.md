@@ -366,19 +366,6 @@ if (error instanceof sessionErrors.E_SESSION_NOT_MUTABLE) {
 }
 ```
 
-## E_SESSION_NOT_MUTABLE
-この例外は、セッションストアが読み取り専用モードで初期化された場合に、`@adonisjs/session`パッケージによって発生します。
-
-- **ステータスコード**: 500
-- **自己処理**: できます。
-
-```ts
-import { errors as sessionErrors } from '@adonisjs/session'
-if (error instanceof sessionErrors.E_SESSION_NOT_MUTABLE) {
-  console.log(error.message)
-}
-```
-
 ## E_SESSION_NOT_READY
 この例外は、セッションストアがまだ初期化されていない場合に、`@adonisjs/session`パッケージによって発生します。これは、セッションミドルウェアを使用していない場合に発生します。
 
