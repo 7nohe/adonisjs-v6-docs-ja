@@ -68,8 +68,11 @@ test('全てのユーザーを取得する', async () => {
 ```ts
 app.container.restore(UserService)
 
+// UserServiceとPostServiceのみを元に戻す
+app.container.restoreAll([UserService, PostService])
+
 // 全てを元に戻す
-app.container.restore()
+app.container.restoreAll()
 ```
 
 ## Sinon.jsを使用したモックとスタブ

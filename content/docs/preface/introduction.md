@@ -38,8 +38,9 @@ AdonisJSは、モダンなJavaScriptプリミティブの上に構築されて�
 AdonisJSは、クラシックなMVCデザインパターンを採用しています。まず、JavaScriptの関数型APIを使用してルートを定義し、それらにコントローラをバインドし、コントローラ内でHTTPリクエストを処理するためのロジックを記述します。
 
 ```ts
+// title: start/routes.ts
 import router from '@adonisjs/core/services/router'
-import PostsController from '#controllers/posts_controller'
+const PostsController = () => import('#controllers/posts_controller')
 
 router.get('posts', [PostsController, 'index'])
 ```
@@ -47,8 +48,9 @@ router.get('posts', [PostsController, 'index'])
 コントローラはモデルを使用してデータベースからデータを取得し、ビュー（テンプレート）をレスポンスとしてレンダリングできます。
 
 ```ts
-import { HttpContext } from '@adonisjs/core/http'
+// title: app/controllers/posts_controller.ts
 import Post from '#models/post'
+import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PostsController {
   async index({ view }: HttpContext) {
@@ -61,8 +63,9 @@ export default class PostsController {
 APIサーバーを構築している場合は、ビューレイヤーをJSONレスポンスに置き換えることができます。ただし、HTTPリクエストの処理と応答のフローは同じままです。
 
 ```ts
-import { HttpContext } from '@adonisjs/core/http'
+// title: app/controllers/posts_controller.ts
 import Post from '#models/post'
+import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PostsController {
   async index({ view }: HttpContext) {

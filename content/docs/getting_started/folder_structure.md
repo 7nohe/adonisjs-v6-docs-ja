@@ -67,34 +67,6 @@ AdonisJSは、Node.jsの[sub-path imports](https://nodejs.org/dist/latest-v19.x/
 }
 ```
 
-コードエディターがインポートの自動補完を行うために、インポートのエイリアスを `tsconfig.json` ファイル内でも再定義する必要があります。エディターが近いうちに `package.json` をエイリアスの唯一の情報源として使用するようになることを期待しています。
-
-```json
-// title: tsconfig.json
-{
-  "compilerOptions": {
-    "paths": {
-      "#controllers/*": ["./app/controllers/*.js"],
-      "#exceptions/*": ["./app/exceptions/*.js"],
-      "#models/*": ["./app/models/*.js"],
-      "#mails/*": ["./app/mails/*.js"],
-      "#services/*": ["./app/services/*.js"],
-      "#listeners/*": ["./app/listeners/*.js"],
-      "#events/*": ["./app/events/*.js"],
-      "#middleware/*": ["./app/middleware/*.js"],
-      "#validators/*": ["./app/validators/*.js"],
-      "#providers/*": ["./app/providers/*.js"],
-      "#policies/*": ["./app/policies/*.js"],
-      "#abilities/*": ["./app/abilities/*.js"],
-      "#database/*": ["./database/*.js"],
-      "#tests/*": ["./tests/*.js"],
-      "#start/*": ["./start/*.js"],
-      "#config/*": ["./config/*.js"]
-    }
-  }
-}
-```
-
 ## `bin` ディレクトリ
 
 `bin` ディレクトリには、特定の環境でアプリケーションをロードするためのエントリーポイントファイルがあります。

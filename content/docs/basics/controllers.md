@@ -17,10 +17,9 @@ node ace make:controller users
 新しく作成されたコントローラは、`class`宣言でscaffoldされ、手動でメソッドを作成することもできます。この例では、`index`メソッドを作成し、ユーザーの配列を返します。
 
 ```ts
-import type { HttpContext } from '@adonisjs/core/http'
-
+// title: app/controllers/users_controller.ts  
 export default class UsersController {
-  async index(ctx: HttpContext) {
+  index() {
     return [
       {
         id: 1,
@@ -50,22 +49,7 @@ router.get('users', [UsersController, 'index'])
 - 各リクエストのたびにコントローラの新しいインスタンスを作成します。
 - また、[IoCコンテナ](../concepts/dependency_injection.md)を使用してクラスを構築します。これにより、自動的な依存性の注入を活用できます。
 
-:::caption{for="error"}
-
-#### 非推奨
-
-必要な場合、コントローラのインスタンスを手動で作成し、メソッドを実行することもできます。ただし、IoCコンテナの利点を失い、冗長なコードが増えるため、おすすめしません。
-
-:::
-
-```ts
-// 🫤 いやいや
-router.get('users', (ctx) => {
-  return new UsersController().index(ctx)
-})
-```
-
-また、関数を使用してコントローラを遅延ロードしていることにも注意してください。
+コントローラを関数を使って遅延ロードしていることにも気づくでしょう。
 
 :::warning
 
@@ -85,28 +69,6 @@ router.get('users', (ctx) => {
 
 :::
 
-
-## シングルアクションコントローラ
-
-AdonisJSでは、シングルアクションコントローラを定義する方法が用意されています。これは、機能を明確に名前付けられたクラスにまとめる効果的な方法です。これを実現するには、コントローラ内に`handle`メソッドを定義する必要があります。
-
-```ts
-import type { HttpContext } from '@adonisjs/core/http'
-
-export default class RegisterNewsletterSubscriptionController {
-  async handle({}: HttpContext) {
-    // ...
-  }
-}
-```
-
-次に、次のようにコントローラをルートに参照できます。
-
-```ts
-router.post('newsletter/subscriptions', [RegisterNewsletterSubscriptionController])
-```
-
-
 ### マジックストリングの使用
 
 コントローラを遅延ロードする別の方法は、コントローラとそのメソッドを文字列として参照することです。これはマジックストリングと呼ばれます。文字列自体には意味がなく、ルーターがコントローラを参照し、内部でインポートするために使用します。
@@ -114,6 +76,7 @@ router.post('newsletter/subscriptions', [RegisterNewsletterSubscriptionControlle
 次の例では、ルートファイル内にインポートステートメントがなく、コントローラのインポートパス+メソッドを文字列としてルートにバインドしています。
 
 ```ts
+// title: start/routes.ts
 import router from '@adonisjs/core/services/router'
 
 router.get('users', '#controllers/users_controller.index')
@@ -125,6 +88,40 @@ router.get('users', '#controllers/users_controller.index')
 
 マジックストリングの使用は主観的であり、個人的に使用するか、チームで使用するかは自由です。
 
+## シングルアクションコントローラ
+
+AdonisJSでは、シングルアクションコントローラを定義する方法が用意されています。これは、機能を明確に名前付けられたクラスにまとめる効果的な方法です。これを実現するには、コントローラ内に`handle`メソッドを定義する必要があります。
+
+```ts
+// title: app/controllers/register_newsletter_subscription_controller.ts
+export default class RegisterNewsletterSubscriptionController {
+  handle() {
+    // ...
+  }
+}
+```
+
+次のようにコントローラをルートに参照できます。
+
+```ts
+// title: start/routes.ts
+router.post('newsletter/subscriptions', [RegisterNewsletterSubscriptionController])
+```
+
+## HTTP context
+
+コントローラメソッドは、最初の引数として[HttpContext](../concepts/http_context.md)クラスのインスタンスを受け取ります。
+
+```ts
+// title: app/controllers/users_controller.ts
+import type { HttpContext } from '@adonisjs/core/http'
+
+export default class UsersController {
+  index(context: HttpContext) {
+    // ...
+  }
+}
+```
 
 ## 依存性の注入
 
@@ -133,20 +130,24 @@ router.get('users', '#controllers/users_controller.index')
 `UserService`クラスがある場合、次のようにコントローラ内でそのインスタンスを注入できます。
 
 ```ts
+// title: app/services/user_service.ts
 export default class UserService {
-  async all() {
+  all() {
     // データベースからユーザーを返す
   }
 }
 ```
 
 ```ts
+// title: app/controllers/users_controller.ts
 import { inject } from '@adonisjs/core'
 import UserService from '#services/user_service'
 
 @inject()
 export default class UsersController {
-  constructor(protected userService: UserService) {}
+  constructor(
+    private userService: UserService
+  ) {}
 
   index() {
     return this.userService.all()
@@ -158,9 +159,10 @@ export default class UsersController {
 
 [メソッドインジェクション](../concepts/dependency_injection.md#using-method-injection)を使用して、コントローラメソッド内で`UserService`のインスタンスを直接注入することもできます。この場合、メソッド名に`@inject`デコレーターを適用する必要があります。
 
-コントローラメソッドに渡される最初のパラメータは常にHttpContextです。したがって、2番目のパラメータとして`UserService`をタイプヒントする必要があります。
+コントローラメソッドに渡される最初のパラメータは常に[`HttpContext`](../concepts/http_context.md)です。したがって、2番目のパラメータとして`UserService`をタイプヒントする必要があります。
 
 ```ts
+// title: app/controllers/users_controller.ts
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
@@ -181,14 +183,17 @@ export default class UsersController {
 たとえば、`UserService`クラスを変更して、[HttpContext](../concepts/http_context.md)のインスタンスをコンストラクターの依存関係として受け入れるようにします。
 
 ```ts
+// title: app/services/user_service.ts
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
 @inject()
 export default class UserService {
-  constructor(protected ctx: HttpContext) {}
+  constructor(
+    private ctx: HttpContext
+  ) {}
 
-  async all() {
+  all() {
     console.log(this.ctx.auth.user)
     // データベースからユーザーを返す
   }
@@ -210,6 +215,7 @@ node ace make:controller posts --resource
 ```
 
 ```ts
+// title: app/controllers/posts_controller.ts
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PostsController {
@@ -257,6 +263,7 @@ export default class PostsController {
 次に、`router.resource`メソッドを使用して`PostsController`をリソースフルなルートにバインドしましょう。メソッドは、リソース名を第1引数として、コントローラの参照を第2引数として受け入れます。
 
 ```ts
+// title: start/routes.ts
 import router from '@adonisjs/core/services/router'
 const PostsController = () => import('#controllers/posts_controller')
 
@@ -309,12 +316,14 @@ router.shallowResource('posts.comments', CommentsController)
 `resource.as`メソッドを使用して、すべてのルートのプレフィックス名を変更できます。次の例では、`group_attributes.index`ルート名を`attributes.index`に変更しています。
 
 ```ts
+// title: start/routes.ts
 router.resource('group-attributes', GroupAttributesController).as('attributes')
 ```
 
 `resource.as`メソッドに指定されたプレフィックスは、スネークケースに変換されます。必要な場合は、変換をオフにすることもできます。
 
 ```ts
+// title: start/routes.ts
 router.resource('group-attributes', GroupAttributesController).as('groupAttributes', false)
 ```
 
@@ -325,6 +334,7 @@ APIサーバーを作成する場合、リソースの作成と更新のフォ�
 `resource.apiOnly`メソッドを使用して、`create`と`edit`のルートを削除することができます。その結果、5つのルートのみが作成されます。
 
 ```ts
+// title: start/routes.ts
 router.resource('posts', PostsController).apiOnly()
 ```
 
@@ -335,14 +345,16 @@ router.resource('posts', PostsController).apiOnly()
 `resource.only`メソッドは、アクション名の配列を受け入れ、それ以外のすべてのルートを削除します。次の例では、`index`、`store`、`destroy`アクションのルートのみが登録されます。
 
 ```ts
+// title: start/routes.ts
 router
   .resource('posts', PostsController)
   .only(['index', 'store', 'destroy'])
 ```
 
-`resource.except`メソッドは、`only`メソッドの逆で、指定されたルート以外のすべてのルートを削除します。
+`resource.except`メソッドは、`only`メソッドの反対で、指定されたルート以外のすべてのルートを登録します。
 
 ```ts
+// title: start/routes.ts
 router
   .resource('posts', PostsController)
   .except(['destroy'])
@@ -355,9 +367,10 @@ router
 `resource.params`メソッドを使用して、パラメータ名を`id`から別の名前に変更できます。
 
 ```ts
-router.resource('posts', PostsController).params({
-  posts: 'post',
-})
+// title: start/routes.ts
+router
+  .resource('posts', PostsController)
+  .params({ posts: 'post' })
 ```
 
 上記の変更により、次のルートが生成されます（一部のみ表示）。
@@ -372,16 +385,20 @@ router.resource('posts', PostsController).params({
 ネストされたリソースを使用する場合も、パラメータ名を変更できます。
 
 ```ts
-router.resource('posts.comments', PostsController).params({
-  posts: 'post',
-  comments: 'comment',
-})
+// title: start/routes.ts
+router
+  .resource('posts.comments', PostsController)
+  .params({
+    posts: 'post',
+    comments: 'comment',
+  })
 ```
 
 ### リソースルートにミドルウェアを割り当てる
 リソースによって登録されるルートにミドルウェアを割り当てるには、`resource.use`メソッドを使用します。このメソッドは、アクション名の配列とそれに割り当てるミドルウェアを受け入れます。例えば：
 
 ```ts
+// title: start/routes.ts
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
@@ -396,6 +413,7 @@ router
 ワイルドカード(*)キーワードを使用して、すべてのルートにミドルウェアを割り当てることもできます。
 
 ```ts
+// title: start/routes.ts
 router
   .resource('posts')
   .use('*', middleware.auth())
@@ -404,6 +422,7 @@ router
 最後に、`.use`メソッドを複数回呼び出して複数のミドルウェアを割り当てることもできます。例えば：
 
 ```ts
+// title: start/routes.ts
 router
   .resource('posts')
   .use(

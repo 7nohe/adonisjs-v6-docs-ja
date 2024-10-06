@@ -1041,7 +1041,7 @@ test('returns correct data', async ({ client }) => {
 
 ```ts
 test('returns correct data', async ({ client }) => {
-  const { body } = await client.get('/home').withInertia()
+  const response = await client.get('/home').withInertia()
 
   // サーバーが返すコンポーネント
   console.log(response.inertiaComponent) 
