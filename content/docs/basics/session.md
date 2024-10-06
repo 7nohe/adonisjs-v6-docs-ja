@@ -264,10 +264,10 @@ export default defineConfig({
 
 <dd>
 
-Define the configuration for the `dynamodb` store. You may either pass the [DynamoDB config](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-dynamodb/Interface/DynamoDBClientConfig/) via the `clientConfig` property or pass an instance of the DynamoDB as the `client` property.
+`dynamodb`ストアの設定を定義します。`clientConfig`プロパティを介して[DynamoDB設定](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-dynamodb/Interface/DynamoDBClientConfig/)を渡すか、`client`プロパティとしてDynamoDBのインスタンスを渡すことができます。
 
 ```ts
-// title: With client config
+// title: クライアント設定
 stores.dynamodb({
   clientConfig: {
     region: 'us-east-1',
@@ -281,7 +281,7 @@ stores.dynamodb({
 ```
 
 ```ts
-// title: With client instance
+// title: クライアントインスタンス
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 const client = new DynamoDBClient({})
 
@@ -290,7 +290,7 @@ stores.dynamodb({
 })
 ```
 
-Additionally, you may define a custom table name and key attribute name.
+さらに、カスタムテーブル名とキー属性名を定義できます。
 
 ```ts
 stores.dynamodb({
