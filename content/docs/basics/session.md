@@ -14,6 +14,8 @@ summary: AdonisJSアプリケーション内で@adonisjs/sessionパッケージ�
 
 - `redis`: セッションデータはRedisデータベース内に保存されます。Redisストアは、大量のセッションデータを持つアプリケーションに推奨され、マルチサーバーデプロイメントにスケールアウトできます。
 
+- `dynamodb`: セッションデータはAmazon DynamoDBテーブル内に保存されます。DynamoDBストアは、特にインフラストラクチャがAWS上に構築されている場合に、非常にスケーラブルで分散型のセッションストアを必要とするアプリケーションに適しています。
+
 - `memory`: セッションデータはグローバルメモリストア内に保存されます。メモリストアはテスト中に使用されます。
 
 組み込みのバックエンドストアに加えて、[カスタムセッションストアを作成して登録](#カスタムセッションストアの作成)することもできます。
@@ -203,6 +205,10 @@ export default defineConfig({
     redis: stores.redis({
       connection: 'main'
     })
+
+    dynamodb: stores.dynamodb({
+      clientConfig: {}
+    }),
   }
   // highlight-end
 })
@@ -250,6 +256,51 @@ export default defineConfig({
 
 </dd>
 
+<dt>
+
+  stores.dynamodb
+
+</dt>
+
+<dd>
+
+Define the configuration for the `dynamodb` store. You may either pass the [DynamoDB config](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-dynamodb/Interface/DynamoDBClientConfig/) via the `clientConfig` property or pass an instance of the DynamoDB as the `client` property.
+
+```ts
+// title: With client config
+stores.dynamodb({
+  clientConfig: {
+    region: 'us-east-1',
+    endpoint: '<database-endpoint>',
+    credentials: {
+      accessKeyId: '',
+      secretAccessKey: '',
+    }
+  },
+})
+```
+
+```ts
+// title: With client instance
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+const client = new DynamoDBClient({})
+
+stores.dynamodb({
+  client,
+})
+```
+
+Additionally, you may define a custom table name and key attribute name.
+
+```ts
+stores.dynamodb({
+  tableName: 'Session'
+  keyAttributName: 'key'
+})
+```
+
+</dd>
+
 </dl>
 
 ---
@@ -257,7 +308,7 @@ export default defineConfig({
 ### 環境変数のバリデーションの更新
 デフォルト以外のセッションストアを使用する場合は、`SESSION_DRIVER`環境変数のバリデーションも更新する必要があります。
 
-次の例では、`cookie`ストアと`redis`ストアを設定しています。したがって、`SESSION_DRIVER`環境変数もこれらのいずれかになるように許可する必要があります。
+次の例では、`cookie`、`redis`、`dynamodb`ストアを設定しています。したがって、`SESSION_DRIVER`環境変数もそれらのいずれかである必要があります。
 
 ```ts
 import { defineConfig, stores } from '@adonisjs/session'

@@ -473,8 +473,11 @@ test('すべてのユーザーを取得する', async ({ client }) => {
 ```ts
 app.container.restore(UserService)
 
+// UserServiceとPostServiceのみを元に戻す
+app.container.restoreAll([UserService, PostService])
+
 // 全てを元に戻す
-app.container.restore()
+app.container.restoreAll()
 ```
 
 ## コンテキスト依存関係
