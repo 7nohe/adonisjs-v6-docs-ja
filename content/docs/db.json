@@ -223,9 +223,9 @@
   },
   {
     "permalink": "basics/debugging",
-    "title": "Debugging",
+    "title": "デバッグ",
     "contentPath": "./basics/debugging.md",
-    "category": "Basics"
+    "category": "基本"
   },
   {
     "permalink": "basics/vite",
