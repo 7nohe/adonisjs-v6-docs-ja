@@ -8,11 +8,9 @@ AdonisJSアプリケーションの設定ファイルは`config`ディレクト�
 
 `config`ディレクトリ内にアプリケーションが必要とする追加のファイルを自由に作成してください。
 
-
 :::note
 
 シークレットや環境固有の設定を保存するために、[環境変数](./environment_variables.md)の使用をオススメします。
-
 
 :::
 
@@ -28,6 +26,8 @@ import { appKey } from '#config/app'
 ```ts
 import databaseConfig from '#config/database'
 ```
+
+設定ファイルをインポートすると、エクスポートされた値にアクセスできます。ほとんどの場合、これらのエクスポートは[`ConfigProvider`](../concepts/config_providers.md)インスタンスであるため、直接その値を使用することは推奨されません。代わりに、[解決された設定](../concepts/config_providers.md#how-do-i-access-the-resolved-config)から値を読み取ります。
 
 ## 設定サービスの使用
 
@@ -93,7 +93,7 @@ export default class DriveServiceProvider {
 
 ## 設定ディレクトリの変更
 
-`adonisrc.ts`ファイルを変更することで、設定ディレクトリの場所を更新できます。変更後、設定ファイルは新しい場所からインポートされます。
+[`adonisrc.ts`](../concepts/adonisrc_file.md)ファイルを変更することで、設定ディレクトリの場所を更新できます。変更後、設定ファイルは新しい場所からインポートされます。
 
 ```ts
 directories: {

@@ -117,7 +117,7 @@ router.get('/docs/:category/*', ({ params }) => {
 
 ルーターは、受け入れるパラメータデータの形式を把握していません。例えば、URIが`/posts/foo-bar`と`/posts/1`の場合、同じルートにマッチします。ただし、パラメータの値を明示的に検証するために、パラメータマッチャーを使用することができます。
 
-マッチャーは`route.where`メソッドを使用して登録されます。最初の引数はパラメータ名であり、2番目の引数はマッチャーオブジェクトです。
+マッチャーは、`where()`メソッドをチェーンして登録されます。最初の引数はパラメータ名で、2番目の引数はマッチャーオブジェクトです。
 
 次の例では、idが有効な数値であることを検証するための正規表現を定義しています。検証に失敗した場合、ルートはスキップされます。
 
@@ -185,7 +185,7 @@ router
 
 ## HTTPメソッド
 
-`router.get`メソッドは、[GET HTTPメソッド](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET)に応答するルートを作成します。同様に、異なるHTTPメソッドのためのルートを登録するために以下のメソッドを使用できます。
+`router.get()`メソッドは、[GET HTTPメソッド](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET)に応答するルートを作成します。同様に、異なるHTTPメソッドのためのルートを登録するために以下のメソッドを使用できます。
 
 ```ts
 // title: start/routes.ts
@@ -207,14 +207,14 @@ router.patch('users/:id', () => {})
 router.delete('users/:id', () => {})
 ```
 
-すべての標準的なHTTPメソッドに応答するルートを作成するには、`route.any`メソッドを使用できます。
+すべての標準的なHTTPメソッドに応答するルートを作成するには、`route.any()`メソッドを使用できます。
 
 ```ts
 // title: start/routes.ts
 router.any('reports', () => {})
 ```
 
-最後に、`route.route`メソッドを使用してカスタムHTTPメソッド用のルートを作成することもできます。
+最後に、`route.route()`メソッドを使用してカスタムHTTPメソッド用のルートを作成することもできます。
 
 ```ts
 // title: start/routes.ts
@@ -253,7 +253,7 @@ router.post('users', [UsersController, 'store'])
 
 ## ルートミドルウェア
 
-`route.use`メソッドを呼び出すことで、ルートにミドルウェアを定義できます。メソッドはインラインのコールバックまたは名前付きミドルウェアへの参照を受け入れます。
+`use()`メソッドを呼び出すことで、ルートにミドルウェアを定義できます。メソッドはインラインのコールバックまたは名前付きミドルウェアへの参照を受け入れます。
 
 以下は、ルートミドルウェアを定義する最小の例です。すべての利用可能なオプションとミドルウェアの実行フローについては、[ミドルウェアの専用ガイド](./middleware.md)を参照してください。
 
@@ -273,7 +273,7 @@ router
 
 ## ルート識別子
 
-すべてのルートには一意の識別子があり、この識別子を使用してアプリケーションの他の場所でルートを参照できます。たとえば、[URLビルダー](#URLビルダー)を使用してルートへのURLを生成したり、[response.redirect](./response.md#redirects)メソッドを使用してルートにリダイレクトしたりできます。
+すべてのルートには一意の識別子があり、この識別子を使用してアプリケーションの他の場所でルートを参照できます。たとえば、[URLビルダー](#URLビルダー)を使用してルートへのURLを生成したり、[response.redirect()](./response.md#redirects)メソッドを使用してルートにリダイレクトしたりできます。
 
 デフォルトでは、ルートパターンがルート識別子です。ただし、`route.as`メソッドを使用して一意で覚えやすい名前をルートに割り当てることもできます。
 
@@ -469,15 +469,15 @@ router
  .domain(':tenant.adonisjs.com')
 ```
 
-## ルートからビューをレンダリングする
+## ルートからEdgeビューをレンダリングする
 
-ルートハンドラがビューをレンダリングするだけの場合、`router.on.render`メソッドを使用できます。これは、明示的なハンドラを定義せずにビューをレンダリングするための便利なショートカットです。
+もし、ビューをレンダリングするだけのルートハンドラを持っている場合、`router.on().render()`メソッドを使用できます。これは、明示的なハンドラを定義せずにビューをレンダリングする便利なショートカットです。
 
 レンダリングメソッドは、レンダリングするエッジテンプレートの名前を受け入れます。オプションでテンプレートデータを第二引数として渡すこともできます。
 
 :::warning
 
-`route.on.render`メソッドは、[Edgeサービスプロバイダ](../views-and-templates/introduction.md#using-edge)を設定している場合にのみ存在します。
+`route.on().render()`メソッドは、[Edgeサービスプロバイダ](../views-and-templates/edgejs.md)を設定している場合にのみ存在します。
 
 :::
 
@@ -490,9 +490,30 @@ router.on('about').render('about', { title: 'About us' })
 router.on('contact').render('contact', { title: 'Contact us' })
 ```
 
+## ルートからInertiaビューをレンダリングする
+
+もし、Inertia.jsアダプタを使用している場合、`router.on().renderInertia()`メソッドを使用してInertiaビューをレンダリングできます。これは、明示的なハンドラを定義せずにビューをレンダリングする便利なショートカットです。
+
+renderInertiaメソッドは、レンダリングするInertiaコンポーネントの名前を受け入れます。オプションでコンポーネントデータを第二引数として渡すこともできます。
+
+:::warning
+
+`route.on().renderInertia()`メソッドは、[Inertiaサービスプロバイダ](../views-and-templates/inertia.md)を設定している場合にのみ存在します。
+
+:::
+
+```ts
+// title: start/routes.ts
+import router from '@adonisjs/core/services/router'
+
+router.on('/').renderInertia('home')
+router.on('about').renderInertia('about', { title: 'About us' })
+router.on('contact').renderInertia('contact', { title: 'Contact us' })
+```
+
 ## ルートからリダイレクトする
 
-リクエストを別のパスやルートにリダイレクトするためのルートハンドラを定義する場合、`router.on.redirect`または`router.on.redirectToPath`メソッドを使用できます。
+リクエストを別のパスやルートにリダイレクトするためのルートハンドラを定義する場合、`router.on().redirect()`または`router.on().redirectToPath()`メソッドを使用できます。
 
 `redirect`メソッドはルート識別子を受け入れます。一方、`redirectToPath`メソッドは静的なパス/URLを受け入れます。
 
@@ -772,7 +793,7 @@ router
 
 URLビルダーは、`make`および`makeSigned`メソッドに与えられたルート識別子でルートの検索を実行します。
 
-AdonisJSアプリケーションの外部で定義されたルートのURLを作成する場合は、ルートの検索を無効にし、`make`および`makeSigned`メソッドにルートパターンを指定することができます。
+AdonisJSアプリケーションの外部で定義されたルートのURLを作成する場合は、ルートの検索を無効にし、`make`および`makeSigned`メソッドにルートパターンを指定できます。
 
 ```ts
 // title: start/routes.ts

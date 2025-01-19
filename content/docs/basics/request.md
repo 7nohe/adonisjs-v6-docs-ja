@@ -112,9 +112,9 @@ router.post('comments', async ({ request }) => {
 
 ### 型安全なリクエストボディ
 
-`request.all`、`request.body`、または選択メソッドは、リクエストボディの期待されるデータ型をAdonisJSが直接知る方法がないため、型安全ではありません。
+デフォルトでは、AdonisJSは`request.all`、`request.body`、またはチェリーピッキングメソッドに対してデータ型を強制しません。リクエストボディの期待される内容を事前に知ることができないためです。
 
-ただし、[バリデータ](./validation.md)を使用してリクエストボディを検証し、静的な型安全性を確保できます。
+型安全を確保するために、[バリデータ](./validation.md)を使用してリクエストボディを検証および解析し、すべての値が正しいことを確認し、期待される型と一致するようにします。
 
 ## リクエストURL
 
@@ -229,7 +229,7 @@ router.get('/', async ({ request }) => {
 このメソッドは、`config/app.ts`ファイルの`http`設定オブジェクト内に定義されます。
 
 ```ts
-http: {
+export const http = defineConfig({
   getIp(request) {
     const ip = request.header('X-Real-Ip')
     if (ip) {
@@ -238,7 +238,7 @@ http: {
 
     return request.ips()[0]
   }
-}
+})
 ```
 
 ## コンテンツネゴシエーション
@@ -316,11 +316,9 @@ const charset = request.charset(['utf-8', 'hex', 'ascii'])
 
 ```ts
 // title: config/app.ts
-{
-  http: {
-    generateRequestId: true
-  }
-}
+export const http = defineConfig({
+  generateRequestId: true
+})
 ```
 
 有効になった場合、`request.id`メソッドを使用してIDにアクセスできます。
@@ -352,23 +350,19 @@ router.get('/', ({ logger }) => {
 ```ts
 import proxyAddr from 'proxy-addr'
 
-{
-  http: {
-    trustProxy: proxyAddr.compile(['127.0.0.1/8', '::1/128'])
-  }
-}
+export const http = defineConfig({
+  trustProxy: proxyAddr.compile(['127.0.0.1/8', '::1/128'])
+})
 ```
 
 `trustProxy`の値は関数にすることもできます。メソッドは、IPアドレスが信頼できる場合は`true`を返し、それ以外の場合は`false`を返す必要があります。
 
 ```ts
-{
-  http: {
-    trustProxy: (address) => {
-      return address === '127.0.0.1' || address === '123.123.123.123'
-    }
+export const http = defineConfig({
+  trustProxy: (address) => {
+    return address === '127.0.0.1' || address === '123.123.123.123'
   }
-}
+})
 ```
 
 もしNginxをアプリケーションコードと同じサーバーで実行している場合、ループバックIPアドレス（つまり、127.0.0.1）を信頼する必要があります。
@@ -376,21 +370,17 @@ import proxyAddr from 'proxy-addr'
 ```ts
 import proxyAddr from 'proxy-addr'
 
-{
-  http: {
-    trustProxy: proxyAddr.compile('loopback')
-  }
-}
+export const http = defineConfig({
+  trustProxy: proxyAddr.compile('loopback')
+})
 ```
 
 アプリケーションがロードバランサーを介してのみアクセス可能で、そのロードバランサーのIPアドレスのリストを持っていない場合は、常に`true`を返すコールバックを定義することでプロキシサーバーを信頼できます。
 
 ```ts
-{
-  http: {
-    trustProxy: () => true
-  }
-}
+export const http = defineConfig({
+  trustProxy: () => true
+})
 ```
 
 ## クエリ文字列パーサーの設定
@@ -400,12 +390,12 @@ import proxyAddr from 'proxy-addr'
 [利用可能なオプションのリスト](https://github.com/adonisjs/http-server/blob/main/src/types/qs.ts#L11)を参照してください。
 
 ```ts
-http: {
+export const http = defineConfig({
   qs: {
     parse: {
     },
   }
-}
+})
 ```
 
 ## フォームメソッドスプーフィング

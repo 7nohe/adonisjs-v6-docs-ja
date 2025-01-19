@@ -145,8 +145,8 @@ createInertiaApp({
   title: (title) => {{ `${title} - ${appName}` }},
   resolve: (name) => {
     return resolvePageComponent(
-      `./pages/${name}.vue`,
-      import.meta.glob<DefineComponent>('./pages/**/*.vue'),
+      `../pages/${name}.vue`,
+      import.meta.glob<DefineComponent>('../pages/**/*.vue'),
     )
   },
   setup({ el, App, props, plugin }) {
@@ -778,13 +778,13 @@ InertiaとCSRF保護を連携させるためには、追加の設定は必要あ
 
 デフォルトでは、`@adonisjs/inertia`パッケージは`public/assets/manifest.json`ファイルのハッシュを計算し、それをアセットのバージョンとして使用します。
 
-この動作をカスタマイズする場合は、`config/inertia.ts`ファイルを編集します。`version`プロパティはアセットのバージョンを定義し、文字列または関数のいずれかを指定できます。
+もしこの動作を調整したい場合は、`config/inertia.ts`ファイルを編集します。`assetsVersion`プロパティはアセットのバージョンを定義し、文字列または関数である必要があります。
 
 ```ts
 import { defineConfig } from '@adonisjs/inertia'
 
 export default defineConfig({
-  version: 'v1'
+  assetsVersion: 'v1'
 })
 ```
 
@@ -817,8 +817,8 @@ export default function render(page) {
     page,
     render: renderToString,
     resolve: (name) => {
-      const pages = import.meta.glob<DefineComponent>('./pages/**/*.vue')
-      return pages[`./pages/${name}.vue`]()
+      const pages = import.meta.glob<DefineComponent>('../pages/**/*.vue')
+      return pages[`../pages/${name}.vue`]()
     },
 
     setup({ App, props, plugin }) {
@@ -893,7 +893,7 @@ export default defineConfig({
   // ...
   ssr: {
     enabled: true,
-    entrypoint: 'inertia/app/ssr.tsx'
+    entrypoint: 'inertia/app/ssr.ts'
   }
 })
 ```
@@ -911,7 +911,7 @@ export default defineConfig({
     inertia({
       ssr: {
         enabled: true,
-        entrypoint: 'inertia/app/ssr.tsx'
+        entrypoint: 'inertia/app/ssr.ts'
       }
     })
   ]
@@ -945,7 +945,7 @@ import { defineConfig } from '@adonisjs/inertia'
 export default defineConfig({
   ssr: {
     enabled: true,
-    pages: (ctx, page) => page.startsWith('admin')
+    pages: (ctx, page) => !page.startsWith('admin')
   }
 })
 ```

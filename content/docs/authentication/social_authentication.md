@@ -281,6 +281,22 @@ router.get('/google/redirect', async ({ ally }) => {
 })
 ```
 
+`.clearParam()`メソッドを使用して、リクエストの既存のパラメータをクリアできます。これは、パラメータのデフォルト値が設定されている場合に、別のカスタム認証フローのためにそれらを再定義する必要がある場合に便利です。
+
+```ts
+router.get('/google/redirect', async ({ ally }) => {
+  return ally
+    .use('google')
+    .redirect((request) => {
+      // highlight-start
+      request
+        .clearParam('redirect_uri')
+        .param('redirect_uri', '')
+      // highlight-end
+    })
+})
+```
+
 ## アクセストークンからユーザーの詳細を取得する
 データベースに保存されたアクセストークンからユーザーの詳細を取得したり、別のOAuthフローを介して提供されたアクセストークンからユーザーの詳細を取得したりする場合があります。たとえば、モバイルアプリを介したネイティブOAuthフローを使用し、アクセストークンを受け取った場合です。
 

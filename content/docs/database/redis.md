@@ -96,6 +96,28 @@ connections
 </dd>
 </dl>
 
+### Connect via Socket
+Unixソケットを使用してRedisに接続するように構成できます。Redis構成オブジェクト内の`path`プロパティを使用し、ソケットへのファイルシステムパスを指定します。
+
+
+```ts
+import env from '#start/env'
+import { defineConfig } from '@adonisjs/redis'
+
+const redisConfig = defineConfig({
+  connection: 'main',
+  connections: {
+    main: {
+      path: env.get('REDIS_SOCKET_PATH'),
+      db: 0,
+      keyPrefix: '',
+    },
+  },
+})
+
+export default redisConfig
+```
+
 ---
 
 ### クラスタの設定

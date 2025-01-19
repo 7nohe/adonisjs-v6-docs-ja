@@ -193,6 +193,10 @@ response.append('Set-cookie', 'cookie-value')
 response.removeHeader('Set-cookie')
 ```
 
+### X-Request-Id header
+
+もしリクエストヘッダが存在するか、[リクエストIDの生成](./request#リクエストIDの生成)が有効になっている場合、ヘッダはレスポンスに含まれます。
+
 ## リダイレクト
 
 `response.redirect`メソッドは、[Redirect](https://github.com/adonisjs/http-server/blob/main/src/redirect.ts)クラスのインスタンスを返します。リダイレクトクラスは、フルエントAPIを使用してリダイレクトURLを構築します。

@@ -48,6 +48,12 @@ Edgeテンプレート内で環境変数にアクセスする場合は、`env`�
 
 `start`ディレクトリ内に[preloadファイルとして`view.ts`を作成](../concepts/adonisrc_file.md#preloads)し、次のコードを記述します。
 
+:::note
+
+`env`モジュールはブラウザに公開されません。`env`モジュールはサーバーサイドレンダリング中のみ利用可能です。
+
+:::
+
 ```ts
 // title: start/view.ts
 import env from '#start/env'
@@ -107,9 +113,14 @@ export default await Env.create(APP_ROOT, {
   APP_KEY: Env.schema.string()
 }
 
-// APP_KEYをオプションにする
+// オプションナルにする
 {
   APP_KEY: Env.schema.string.optional()
+}
+
+// Mark it as optional with a condition
+{
+  APP_KEY: Env.schema.string.optionalWhen(process.env.NODE_ENV === 'production')
 }
 ```
 
@@ -163,6 +174,11 @@ export default await Env.create(APP_ROOT, {
 {
   CACHE_VIEWS: Env.schema.boolean.optional()
 }
+
+// Mark it as optional with a condition
+{
+  CACHE_VIEWS: Env.schema.boolean.optionalWhen(process.env.NODE_ENV === 'production')
+}
 ```
 
 ### schema.number
@@ -178,6 +194,11 @@ export default await Env.create(APP_ROOT, {
 {
   PORT: Env.schema.number.optional()
 }
+
+// Mark it as optional with a condition
+{
+  PORT: Env.schema.number.optionalWhen(process.env.NODE_ENV === 'production')
+}
 ```
 
 ### schema.enum
@@ -191,12 +212,23 @@ export default await Env.create(APP_ROOT, {
     .enum(['development', 'production'] as const)
 }
 
-// オプションにする
+// オプションナルにする
 {
   NODE_ENV: Env
     .schema
     .enum
     .optional(['development', 'production'] as const)
+}
+
+// 条件付きでオプショナルにする
+{
+  NODE_ENV: Env
+    .schema
+    .enum
+    .optionalWhen(
+      process.env.NODE_ENV === 'production',
+      ['development', 'production'] as const
+    )
 }
 
 // ネイティブな列挙型の使用
@@ -326,6 +358,26 @@ env.get('SESSION_DRIVER') // memory
         </tr>
     </tbody>
 </table>
+
+## インターポレーションのための識別子の使用
+
+`identifiers`を定義して、インターポレーションの動作を変更できます。識別子は、環境変数の値の前に付けられる文字列で、値の解決をカスタマイズできます。
+
+```ts
+import { EnvParser } from '@adonisjs/env'
+
+EnvParser.identifier('base64', (value) => {
+  return Buffer.from(value, 'base64').toString()
+})
+
+const envParser = new EnvParser(`
+  APP_KEY=base64:U7dbSKkdb8wjVFOTq2osaDVz4djuA7BRLdoCUJEWxak=
+`)
+
+console.log(await envParser.parse())
+```
+
+上記の例では、`base64:`接頭辞は、値を返す前にbase64からデコードするように環境変数パーサーに指示します。
 
 ## dot-envファイル内での変数の使用
 

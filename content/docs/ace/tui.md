@@ -270,8 +270,8 @@ export default class GreetCommand extends BaseCommand {
 
 ```ts
 const sleep = () => new Promise<void>((resolve) => setTimeout(resolve, 50))
-
-tasks
+const tasks = this.ui.tasks()
+await tasks
   .add('リポジトリをクローンする', async (task) => {
     for (let i = 0; i <= 100; i = i + 2) {
       await sleep()
@@ -280,6 +280,7 @@ tasks
 
     return '完了'
   })
+  .run()
 ```
 
 ### verboseレンダラに切り替える

@@ -4,7 +4,7 @@ summary: 新しいAdonisJSアプリケーションを作成して設定する方
 
 # インストール
 
-新しいアプリケーションを作成する前に、コンピュータにNode.jsとnpmがインストールされていることを確認してください。AdonisJSは`Node.js >= 20.6`が必要です。
+新しいアプリケーションを作成する前に、コンピュータにNode.jsとnpmがインストールされていることを確認してください。**AdonisJSにはNode.jsバージョン20以上が必要です**。
 
 Node.jsは[公式のインストーラー](https://nodejs.org/en/download/)または[Volta](https://docs.volta.sh/guide/getting-started)を使用してインストールできます。Voltaはクロスプラットフォームのパッケージマネージャーであり、コンピュータに複数のNode.jsバージョンをインストールして実行できます。
 
@@ -179,6 +179,8 @@ npm init adonisjs@latest -- -K=slim --db=mysql
 また、サーバーサイドレンダリングをオンまたはオフにするために`--ssr`および`--no-ssr`フラグを使用することもできます。
 
 ```sh
+npm init adonisjs@latest -- -K=inertia
+
 # サーバーサイドレンダリングを使用したReact
 npm init adonisjs@latest -- -K=inertia --adapter=react --ssr
 

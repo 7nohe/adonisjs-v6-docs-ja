@@ -83,7 +83,7 @@ run({ id: 3 })
 // title: user_service.js
 import { storage } from './storage.js'
 
-export default class UserService {
+export class UserService {
   async get() {
     const state = storage.getStore()
     console.log(`The user id is ${state.user.id}`)

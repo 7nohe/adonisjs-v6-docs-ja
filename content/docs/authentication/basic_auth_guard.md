@@ -108,7 +108,7 @@ router
 
 ### 認証例外の処理
 
-認証ミドルウェアは、ユーザーが認証されていない場合に[E_UNAUTHORIZED_ACCESS](https://github.com/adonisjs/auth/blob/main/src/auth/errors.ts#L18)をスローします。この例外は、レスポンスの[WWW-Authenticate](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/WWW-Authenticate)ヘッダーとともに自動的にHTTPレスポンスに変換されます。`WWW-Authenticate`は認証を要求し、資格情報の再入力をトリガーします。
+認証ミドルウェアは、ユーザーが認証されていない場合に[E_UNAUTHORIZED_ACCESS](https://github.com/adonisjs/auth/blob/main/src/errors.ts#L21)をスローします。この例外は、レスポンスの[WWW-Authenticate](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/WWW-Authenticate)ヘッダーとともに自動的にHTTPレスポンスに変換されます。`WWW-Authenticate`は認証を要求し、資格情報の再入力をトリガーします。
 
 ## 認証されたユーザーへのアクセス
 `auth.user`プロパティを使用してログイン済みのユーザーインスタンスにアクセスできます。`auth`ミドルウェアを使用しているため、`auth.user`プロパティは常に利用可能です。

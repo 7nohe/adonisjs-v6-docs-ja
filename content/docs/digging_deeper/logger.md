@@ -45,8 +45,8 @@ export default defineConfig({
   loggers: {
     app: {
       enabled: true,
-      name: Env.get('APP_NAME'),
-      level: Env.get('LOG_LEVEL', 'info')
+      name: env.get('APP_NAME'),
+      level: env.get('LOG_LEVEL', 'info')
     },
   }
 })
@@ -98,8 +98,8 @@ Pinoのトランスポートは、ログを送信先に書き込む重要な役�
   loggers: {
     app: {
       enabled: true,
-      name: Env.get('APP_NAME'),
-      level: Env.get('LOG_LEVEL', 'info'),
+      name: env.get('APP_NAME'),
+      level: env.get('LOG_LEVEL', 'info'),
       
       // highlight-start
       transport: {
@@ -229,13 +229,13 @@ export default defineConfig({
     // highlight-start
     app: {
       enabled: true,
-      name: Env.get('APP_NAME'),
-      level: Env.get('LOG_LEVEL', 'info')
+      name: env.get('APP_NAME'),
+      level: env.get('LOG_LEVEL', 'info')
     },
     payments: {
       enabled: true,
       name: 'payments',
-      level: Env.get('LOG_LEVEL', 'info')
+      level: env.get('LOG_LEVEL', 'info')
     },
     // highlight-start
   }
@@ -371,8 +371,8 @@ Pinoには、ログをファイルに書き込むための`pino/file`ターゲ�
 ```ts
 app: {
   enabled: true,
-  name: Env.get('APP_NAME'),
-  level: Env.get('LOG_LEVEL', 'info')
+  name: env.get('APP_NAME'),
+  level: env.get('LOG_LEVEL', 'info')
 
   transport: {
     targets: targets()
@@ -398,8 +398,8 @@ npm i pino-roll
 ```ts
 app: {
   enabled: true,
-  name: Env.get('APP_NAME'),
-  level: Env.get('LOG_LEVEL', 'info')
+  name: env.get('APP_NAME'),
+  level: env.get('LOG_LEVEL', 'info')
 
   transport: {
     targets: targets()
@@ -430,8 +430,8 @@ Pinoでは、`redact`オプションを使用してログから機密なキー�
 // title: config/logger.ts
 app: {
   enabled: true,
-  name: Env.get('APP_NAME'),
-  level: Env.get('LOG_LEVEL', 'info')
+  name: env.get('APP_NAME'),
+  level: env.get('LOG_LEVEL', 'info')
 
   // highlight-start
   redact: {
