@@ -186,7 +186,7 @@ router.get('/', async ({ request, response }) => {
 ```ts
 response.plainCookie('token', tokenValue, {
   httpOnly: true,
-  encoding: false,
+  encode: false,
 })
 
 // エンコーディングをオフにして通常のクッキーを読み取る

@@ -20,7 +20,7 @@ summary: AdonisJSでミドルウェアについて学び、それらを作成し
 
 これは、フレームワークのルーティングシステムに依存しないアプリケーションの追加機能を追加するために使用できます。たとえば、静的アセットミドルウェアはサーバーミドルウェアとして登録されています。
 
-サーバーミドルウェアは、`start/kernel.ts`ファイル内の`serve.use`メソッドを使用して登録できます。
+サーバーミドルウェアは、`start/kernel.ts`ファイル内の`server.use`メソッドを使用して登録できます。
 
 ```ts
 import server from '@adonisjs/core/services/server'
@@ -209,7 +209,7 @@ router.get('payments', () => {}).use(
 
 ```ts
 // title: app/services/geoip_service.ts
-export default class GeoIpService {
+export class GeoIpService {
   async lookup(ipAddress: string) {
     // 場所を検索して返す
   }
@@ -218,9 +218,9 @@ export default class GeoIpService {
 
 ```ts
 import { inject } from '@adonisjs/core'
-import { HttpContext } from '@adonisjs/core/http'
-import { NextFn } from '@adonisjs/core/types/http'
-import GeoIpService from '#services/geoip_service'
+import { GeoIpService } from '#services/geoip_service'
+import type { HttpContext } from '@adonisjs/core/http'
+import type { NextFn } from '@adonisjs/core/types/http'
 
 @inject()
 export default class UserLocationMiddleware {

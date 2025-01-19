@@ -39,15 +39,15 @@ export default authConfig
 `sessionUserProvider`メソッドは[SessionLucidUserProvider](https://github.com/adonisjs/auth/blob/main/modules/session_guard/user_providers/lucid.ts)クラスのインスタンスを作成します。これは、認証に使用するモデルへの参照を受け入れます。
 
 ## ログインの実行
-`guard.login`メソッドを使用してユーザーをログインできます。このメソッドはUserモデルのインスタンスを受け入れ、ユーザーのログインセッションを作成します。
+`login`メソッドを使用してユーザーをログインできます。このメソッドはUserモデルのインスタンスを受け入れ、ユーザーのログインセッションを作成します。
 
 次の例：
 
 - [AuthFinder mixin](./verifying_user_credentials.md#using-the-auth-finder-mixin)から`verifyCredentials`メソッドを使用して、メールアドレスとパスワードでユーザーを検索します。
 
-- `auth.use('web')`は、`config/auth.ts`ファイルで設定された[SessionGuard](https://github.com/adonisjs/auth/blob/main/modules/session_guard/guard.ts)のインスタンスを返します。
+- `auth.use('web')`は、`config/auth.ts`ファイル（`web`は設定ファイルで定義されたガードの名前）で設定された[SessionGuard](https://github.com/adonisjs/auth/blob/main/modules/session_guard/guard.ts)のインスタンスを返します。
 
-- 次に、`guard.login(user)`メソッドを呼び出して、ユーザーのログインセッションを作成します。
+- 次に、`auth.use('web').login(user)`メソッドを呼び出して、ユーザーのログインセッションを作成します。
 
 - 最後に、ユーザーを`/dashboard`エンドポイントにリダイレクトします。リダイレクトエンドポイントをカスタマイズしてください。
 
@@ -130,7 +130,7 @@ router
 
 ### 認証例外の処理
 
-認証ミドルウェアは、ユーザーが認証されていない場合に[E_UNAUTHORIZED_ACCESS](https://github.com/adonisjs/auth/blob/main/src/auth/errors.ts#L18)をスローします。この例外は、次のコンテンツネゴシエーションルールを使用して自動的に処理されます。
+認証ミドルウェアは、ユーザーが認証されていない場合に[E_UNAUTHORIZED_ACCESS](https://github.com/adonisjs/auth/blob/main/src/errors.ts#L21)をスローします。この例外は、次のコンテンツネゴシエーションルールを使用して自動的に処理されます。
 
 - `Accept=application/json`ヘッダーを持つリクエストは、`message`プロパティを持つエラーの配列を受け取ります。
 

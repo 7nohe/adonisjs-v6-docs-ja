@@ -21,6 +21,20 @@ if (error instanceof errors.E_ROUTE_NOT_FOUND) {
 }
 ```
 
+## E_ROW_NOT_FOUND
+The exception is raised when the database query for finding one item fails [e.g when using `Model.findOrFail()`]. By default, the client will get a 404 response, and optionally, you may render an HTML page using [status pages](../basics/exception_handling.md#status-pages).
+
+- **Status code**: 404
+- **Self handled**: No
+
+```ts
+import { errors as lucidErrors } from '@adonisjs/lucid'
+if (error instanceof lucidErrors.E_ROW_NOT_FOUND) {
+  // handle error
+  console.log(`${error.model?.name || 'Row'} not found`)
+}
+```
+
 ## E_AUTHORIZATION_FAILURE
 この例外は、バウンサーの認証チェックが失敗した場合に発生します。この例外は自己処理であり、[コンテンツネゴシエーション](../security/authorization.md#throwing-authorizationexception)を使用してクライアントに適切なエラーレスポンスを返します。
 

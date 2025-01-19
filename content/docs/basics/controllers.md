@@ -131,7 +131,7 @@ export default class UsersController {
 
 ```ts
 // title: app/services/user_service.ts
-export default class UserService {
+export class UserService {
   all() {
     // データベースからユーザーを返す
   }
@@ -188,7 +188,7 @@ import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 
 @inject()
-export default class UserService {
+export class UserService {
   constructor(
     private ctx: HttpContext
   ) {}

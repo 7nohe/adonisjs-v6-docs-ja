@@ -21,8 +21,8 @@ TypeScriptで書かれたNode.jsアプリケーションで同じ設定プリセ
 ```sh
 npm i -D @adonisjs/tsconfig
 
-# 以下のパッケージもインストールすることを忘れないでください
-npm i -D typescript ts-node @swc/core
+# Make sure also to install the following packages
+npm i -D typescript ts-node-maintained @swc/core
 ```
 
 AdonisJSアプリケーションを作成する際には、`tsconfig.app.json`ファイルから拡張します（スターターキットで事前に設定済み）。

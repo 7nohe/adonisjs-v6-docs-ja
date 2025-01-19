@@ -183,6 +183,22 @@ Edgeテンプレート内で`@dd`タグを使用して`dd`ヘルパーを使用�
 @dump(state)
 ```
 
+`@dump`ヘルパーを使用する場合は、ページに「dumper」という名前の[EdgeJS Stack](https://edgejs.dev/docs/stacks)があることを確認してください。`@dump`ヘルパーによって使用されるスクリプトとスタイルは、最終的なHTML出力に含めるためにこのスタックに書き込まれます。
+
+```edge
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @stack('dumper')
+  </head>
+  <body>
+    @dump(state)
+  </body>
+</html>
+```
+
 ### ダンパー設定
 `config/app.ts`ファイル内でダンパー設定を構成できます。このファイルは、以下のように`dumper`設定オブジェクトをエクスポートする必要があります。
 
