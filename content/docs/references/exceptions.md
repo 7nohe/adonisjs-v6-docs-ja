@@ -22,7 +22,7 @@ if (error instanceof errors.E_ROUTE_NOT_FOUND) {
 ```
 
 ## E_ROW_NOT_FOUND
-The exception is raised when the database query for finding one item fails [e.g when using `Model.findOrFail()`]. By default, the client will get a 404 response, and optionally, you may render an HTML page using [status pages](../basics/exception_handling.md#status-pages).
+この例外は、1つのアイテムを見つけるためのデータベースクエリが失敗した場合に発生します（例：`Model.findOrFail()`を使用する場合）。デフォルトでは、クライアントは404のレスポンスを受け取り、オプションで[ステータスページ](../basics/exception_handling.md#status-pages)をレンダリングすることもできます。
 
 - **Status code**: 404
 - **Self handled**: No

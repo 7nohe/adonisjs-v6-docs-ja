@@ -441,13 +441,13 @@ stopListening()
 await subscription.delete()
 ```
 
-## Avoiding GZip Interference
+## GZipの干渉を回避する
 
-When deploying applications that use `@adonisjs/transmit`, it’s important to ensure that GZip compression does not interfere with the `text/event-stream` content type used by Server-Sent Events (SSE). Compression applied to `text/event-stream` can cause connection issues, leading to frequent disconnects or SSE failures.
+`@adonisjs/transmit`を使用するアプリケーションをデプロイする際には、GZip圧縮がSSE（Server-Sent Events）で使用される`text/event-stream`コンテンツタイプに干渉しないようにすることが重要です。`text/event-stream`に適用される圧縮は、接続の問題を引き起こし、頻繁な切断やSSEの失敗を引き起こす可能性があります。
 
-If your deployment uses a reverse proxy (such as Traefik or Nginx) or other middleware that applies GZip, ensure that compression is disabled for the `text/event-stream` content type.
+もしデプロイメントがリバースプロキシ（TraefikやNginxなど）やその他のミドルウェアを使用している場合、`text/event-stream`コンテンツタイプに対して圧縮が無効になっていることを確認してください。
 
-### Example Configuration for Traefik
+### Traefikのための設定例
 
 ```plaintext
 traefik.http.middlewares.gzip.compress=true

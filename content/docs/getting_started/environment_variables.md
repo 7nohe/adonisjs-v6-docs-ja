@@ -50,7 +50,7 @@ Edgeテンプレート内で環境変数にアクセスする場合は、`env`�
 
 :::note
 
-Doing this will not expose the `env` module to the browser. The `env` module is only available during server-side rendering.
+`env`モジュールはブラウザに公開されません。`env`モジュールはサーバーサイドレンダリング中のみ利用可能です。
 
 :::
 

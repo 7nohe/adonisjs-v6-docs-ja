@@ -75,7 +75,7 @@ export class SessionKyselyUserProvider implements SessionUserProviderContract<Us
 }
 ```
 
-Once you have implemented the `UserProvider` interface, you can use it inside your configuration.
+`UserProvider`インターフェイスを実装したら、設定内でそれを使用できます。
 
 ```ts
 const authConfig = defineConfig({

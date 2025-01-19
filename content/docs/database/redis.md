@@ -97,7 +97,7 @@ connections
 </dl>
 
 ### Connect via Socket
-You can configure Redis to use a Unix socket for connections. Use the `path` property in your Redis configuration object and provide the file system path to the socket.
+Unixソケットを使用してRedisに接続するように構成できます。Redis構成オブジェクト内の`path`プロパティを使用し、ソケットへのファイルシステムパスを指定します。
 
 
 ```ts
