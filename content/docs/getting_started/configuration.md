@@ -64,10 +64,10 @@ export default class DriveServiceProvider {
   
   register() {
     this.app.container.singleton('drive', () => {
-      // ハイライト開始
+      // highlight-start
       const driveConfig = this.app.config.get('drive')
       return new DriveManager(driveConfig)
-      // ハイライト終了
+      // highlight-end
     })
   }
 }
