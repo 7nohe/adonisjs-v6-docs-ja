@@ -366,7 +366,7 @@ env.get('SESSION_DRIVER') // memory
 ```ts
 import { EnvParser } from '@adonisjs/env'
 
-EnvParser.identifier('base64', (value) => {
+EnvParser.defineIdentifier('base64', (value) => {
   return Buffer.from(value, 'base64').toString()
 })
 
@@ -378,6 +378,33 @@ console.log(await envParser.parse())
 ```
 
 上記の例では、`base64:`接頭辞は、値を返す前にbase64からデコードするように環境変数パーサーに指示します。
+
+あるいは、`defineIdentifierIfMissing`メソッドを使って識別子を定義することもできます。このメソッドは、既存の識別子がある場合は上書きしません。
+
+```ts
+EnvParser.defineIdentifierIfMissing('base64', (value) => {
+  return Buffer.from(value, 'base64').toString()
+})
+```
+
+:::note
+
+これらのメソッドは`start/env.ts`ファイル内で直接使用できます。
+
+```ts
+// title: start/env.ts
+import { Env } from '@adonisjs/core/env'
+
+Env.defineIdentifier('base64', (value) => {
+  return Buffer.from(value, 'base64').toString()
+})
+
+export default await Env.create(APP_ROOT, {
+  APP_KEY: Env.schema.string()
+})
+```
+
+:::
 
 ## dot-envファイル内での変数の使用
 

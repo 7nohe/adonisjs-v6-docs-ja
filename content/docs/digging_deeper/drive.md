@@ -43,7 +43,7 @@ node ace add @adonisjs/drive
 
 `@adonisjs/drive` パッケージの設定は `config/drive.ts` ファイルに保存されます。1つの設定ファイル内で複数のサービスの設定を定義できます。
 
-参照: [Config stub](https://github.com/adonisjs/drive/blob/main/stubs/config/drive.stub)
+参照: [Config stub](https://github.com/adonisjs/drive/blob/3.x/stubs/config/drive.stub)
 
 ```ts
 import env from '#start/env'
@@ -130,15 +130,15 @@ router.put('/me', async ({ request, response }) => {
   return {
     message: '画像がアップロードされました',
     // highlight-start
-    url: await drive.use().getUrl(key),
+    url: image.meta.url,
     // highlight-end
   }
 })
 ```
 
-- Driveパッケージは[MultipartFile](https://github.com/adonisjs/drive/blob/develop/providers/drive_provider.ts#L110) に `moveToDisk` メソッドを追加します。このメソッドはファイルを `tmpPath` から設定されたストレージプロバイダにコピーします。
+- Driveパッケージは [MultipartFile](https://github.com/adonisjs/drive/blob/develop/providers/drive_provider.ts#L110) に `moveToDisk` メソッドを追加します。このメソッドはファイルを `tmpPath` から設定されたストレージプロバイダへ移動します。
 
-- `drive.use().getUrl()` メソッドはファイルの公開URLを返します。プライベートファイルの場合は、`getSignedUrl` メソッドを使用する必要があります。
+- ファイルを移動した後、ファイルオブジェクトの `meta.url` プロパティが設定されます。このプロパティにはファイルの公開URLが含まれます。ファイルが非公開の場合は、`drive.use().getSignedUrl()` メソッドを使用してください。
 
 ## Drive サービス
 
@@ -327,6 +327,15 @@ await image.moveToDisk(key, 's3')
  */
 await image.moveToDisk(key, 's3', {
   contentType: 'image/png',
+})
+
+/**
+ * Write file by first reading it as a buffer. You may use this
+ * option when your cloud storage provider results in broken
+ * files with the "stream" option
+ */
+await image.moveToDisk(key, 's3', {
+  moveAs: 'buffer'
 })
 ```
 

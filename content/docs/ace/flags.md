@@ -159,12 +159,12 @@ declare startServer: boolean
 
 ```ts
 @flags.boolean({
-  aliases: ['r']
+  alias: ['r']
 })
 declare resource: boolean
 
 @flags.boolean({
-  aliases: ['s']
+  alias: ['s']
 })
 declare singular: boolean
 ```

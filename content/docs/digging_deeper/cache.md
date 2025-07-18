@@ -1,25 +1,25 @@
 ---
-summary: アプリケーションのパフォーマンスを向上させるためにデータをキャッシュする
+summary: アプリケーションのパフォーマンス向上のためにデータをキャッシュする
 ---
 
 # キャッシュ
 
-AdonisJS Cache (`@adonisjs/cache`) は、データをキャッシュしてアプリケーションのパフォーマンスを向上させるために [bentocache.dev](https://bentocache.dev) の上に構築されたシンプルで軽量なラッパーです。Redis、DynamoDB、PostgreSQL、インメモリキャッシュなど、さまざまなキャッシュドライバと対話するための簡単で統一されたAPIを提供します。
+AdonisJS Cache（`@adonisjs/cache`）は、[bentocache.dev](https://bentocache.dev) 上に構築されたシンプルで軽量なラッパーです。データをキャッシュし、アプリケーションのパフォーマンスを向上させます。Redis、DynamoDB、PostgreSQL、インメモリキャッシュなど、さまざまなキャッシュドライバーとやり取りするための統一されたAPIを提供します。
 
-Bentocacheのドキュメントを読むことを強くオススメします。Bentocacheは、[マルチティア](https://bentocache.dev/docs/multi-tier)、[グレース期間](https://bentocache.dev/docs/grace-periods)、[タイムアウト](https://bentocache.dev/docs/timeouts)、[スタンピードプロテクション](https://bentocache.dev/docs/stampede-protection) など、特定の状況で非常に役立つ高度なオプションの概念を提供します。
+Bentocacheのドキュメントもぜひご覧ください。Bentocacheは、[マルチティア](https://bentocache.dev/docs/multi-tier)、[グレース期間](https://bentocache.dev/docs/grace-periods)、[タグ付け](https://bentocache.dev/docs/tagging)、[タイムアウト](https://bentocache.dev/docs/timeouts)、[スタンピードプロテクション](https://bentocache.dev/docs/stampede-protection) など、状況によって非常に便利な高度なオプション機能を提供しています。
 
 ## インストール
 
-以下のコマンドを実行して `@adonisjs/cache` パッケージをインストールおよび設定します：
+以下のコマンドで `@adonisjs/cache` パッケージをインストール・設定します。
 
 ```sh
 node ace add @adonisjs/cache
 ```
 
-:::disclosure{title="addコマンドによって実行されるステップ"}
+:::disclosure{title="addコマンドで実行される手順を見る"}
 
-1. 検出されたパッケージマネージャーを使用して `@adonisjs/cache` パッケージをインストールします。
-2. `adonisrc.ts` ファイルに次のサービスプロバイダーを登録します：
+1. 検出されたパッケージマネージャーを使って `@adonisjs/cache` パッケージをインストールします。
+2. `adonisrc.ts` ファイルに以下のサービスプロバイダーを登録します。
 
   ```ts
   {
@@ -31,36 +31,36 @@ node ace add @adonisjs/cache
   ```
 
 3. `config/cache.ts` ファイルを作成します。
-4. `.env` ファイル内に選択されたキャッシュドライバの環境変数を定義します。
+4. 選択したキャッシュドライバー用の環境変数を `.env` ファイルに定義します。
 
 :::
 
 ## 設定
 
-キャッシュパッケージの設定ファイルは `config/cache.ts` にあります。デフォルトのキャッシュドライバ、ドライバのリスト、およびそれらの特定の設定を構成できます。
+キャッシュパッケージの設定ファイルは `config/cache.ts` にあります。デフォルトのキャッシュドライバーや、利用可能なドライバー、その個別設定を行えます。
 
-参照： [Config stub](https://github.com/adonisjs/cache/blob/1.x/stubs/config.stub)
+参考: [Config stub](https://github.com/adonisjs/cache/blob/1.x/stubs/config.stub)
 
 ```ts
 import { defineConfig, store, drivers } from '@adonisjs/cache'
 
 const cacheConfig = defineConfig({
   default: 'redis',
-  
+
   stores: {
    /**
-    * データをDynamoDBにのみキャッシュ
+    * DynamoDB のみでキャッシュ
     */
    dynamodb: store().useL2Layer(drivers.dynamodb({})),
 
    /**
-    * Lucidで設定されたデータベースを使用してデータをキャッシュ
+    * Lucidで設定したデータベースを利用
     */
    database: store().useL2Layer(drivers.database({ connectionName: 'default' })),
 
    /**
-    * データをプライマリストアとしてインメモリに、セカンダリストアとしてRedisにキャッシュ。
-    * アプリケーションが複数のサーバーで実行されている場合、インメモリキャッシュはバスを使用して同期する必要があります。
+    * プライマリストアにインメモリ、セカンダリストアにRedisを利用
+    * 複数サーバーで動作する場合、インメモリキャッシュはbusで同期が必要
     */
    redis: store()
     .useL1Layer(drivers.memory({ maxSize: '100mb' }))
@@ -72,29 +72,29 @@ const cacheConfig = defineConfig({
 export default cacheConfig
 ```
 
-上記のコード例では、各キャッシュストアに複数のレイヤーを設定しています。これは [マルチティアキャッシングシステム](https://bentocache.dev/docs/multi-tier) と呼ばれます。これにより、最初に高速なインメモリキャッシュ（最初のレイヤー）をチェックし、データが見つからない場合は分散キャッシュ（2番目のレイヤー）を使用します。
+上記の例では、各キャッシュストアに複数のレイヤーを設定しています。これは[マルチティアキャッシュシステム](https://bentocache.dev/docs/multi-tier)と呼ばれ、まず高速なインメモリキャッシュ（第一層）を確認し、見つからなければ分散キャッシュ（第二層）を利用します。
 
 ### Redis
 
-Redisをキャッシュシステムとして使用するには、`@adonisjs/redis` パッケージをインストールして設定する必要があります。ドキュメントはこちらを参照してください： [Redis](../database/redis.md)。
+Redisをキャッシュシステムとして利用するには、`@adonisjs/redis` パッケージのインストールと設定が必要です。詳細は[Redis](../database/redis.md)を参照してください。
 
-`config/cache.ts` では、`connectionName` を指定する必要があります。このプロパティは `config/redis.ts` ファイル内のRedis設定キーと一致する必要があります。
+`config/cache.ts` では `connectionName` を指定します。この値は `config/redis.ts` の設定キーと一致させてください。
 
 ### データベース
 
-`database` ドライバには `@adonisjs/lucid` のピア依存関係があります。したがって、このパッケージをインストールして設定する必要があります。
+`database` ドライバーは `@adonisjs/lucid` が必要です。利用する場合はインストールと設定を行ってください。
 
-`config/cache.ts` では、`connectionName` を指定する必要があります。このプロパティは `config/database.ts` ファイル内のデータベース設定キーに対応する必要があります。
+`config/cache.ts` では `connectionName` を指定します。この値は `config/database.ts` の設定キーと一致させてください。
 
-### その他のドライバ
+### その他のドライバー
 
-`memory`、`dynamodb`、`kysely`、`orchid` などの他のドライバを使用できます。
+`memory`、`dynamodb`、`kysely`、`orchid` など他のドライバーも利用できます。
 
 詳細は [Cache Drivers](https://bentocache.dev/docs/cache-drivers) を参照してください。
 
-## 使用方法
+## 使い方
 
-キャッシュが設定されたら、`cache` サービスをインポートして操作できます。次の例では、ユーザーの詳細を5分間キャッシュします：
+キャッシュの設定後、`cache` サービスをインポートして利用できます。以下はユーザー情報を5分間キャッシュする例です。
 
 ```ts
 import cache from '@adonisjs/cache/services/main'
@@ -114,15 +114,42 @@ router.get('/user/:id', async ({ params }) => {
 
 :::warning
 
-ご覧のとおり、`user.toJSON()` を使用してユーザーデータをシリアル化しています。これは、データをキャッシュに保存するためにシリアル化する必要があるためです。Lucidモデルや `Date` のインスタンスなどのクラスは、Redisやデータベースのようなキャッシュに直接保存することはできません。
+ご覧の通り、`user.toJSON()` でユーザーデータをシリアライズしています。キャッシュに保存するにはデータのシリアライズが必要です。Lucidモデルや `Date` インスタンスなどは直接キャッシュできません。
 
 :::
 
-`ttl` はキャッシュキーの有効期限を定義します。TTLが切れると、キャッシュキーは古いと見なされ、次のリクエストはファクトリメソッドからデータを再取得します。
+`ttl` はキャッシュキーの有効期間（Time To Live）です。期限切れ後はキャッシュが無効となり、次のリクエストでfactoryメソッドから再取得されます。
+
+### タグ付け
+
+キャッシュエントリにタグを付与し、タグ単位で一括無効化できます。
+
+```ts
+await bento.getOrSet({
+  key: 'foo',
+  factory: getFromDb(),
+  tags: ['tag-1', 'tag-2']
+});
+
+await bento.deleteByTag({ tags: ['tag-1'] });
+```
+
+### 名前空間
+
+キーをグループ化するもう一つの方法が名前空間です。後からまとめて無効化できます。
+
+```ts
+const users = bento.namespace('users')
+
+users.set({ key: '32', value: { name: 'foo' } })
+users.set({ key: '33', value: { name: 'bar' } })
+
+users.clear()
+```
 
 ### グレース期間
 
-キャッシュキーが期限切れでもグレース期間内であれば古いデータを返すようにするには、`grace` オプションを使用します。この変更により、Bentocacheは `SWR` や `TanStack Query` と同じように動作します。
+`grace` オプションを使うと、キャッシュキーが期限切れでもグレース期間内なら古いデータを返しつつ裏で再取得できます。`SWR` や `TanStack Query` と同様の動作です。
 
 ```ts
 import cache from '@adonisjs/cache/services/main'
@@ -138,11 +165,11 @@ cache.getOrSet({
 })
 ```
 
-上記の例では、データは1時間後に古いと見なされます。ただし、6時間のグレース期間内の次のリクエストは古いデータを返しながら、ファクトリメソッドからデータを再取得してキャッシュを更新します。
+上記では、1時間でデータは期限切れとなりますが、6時間のグレース期間内なら古いデータを返しつつ裏で再取得・更新します。
 
 ### タイムアウト
 
-ファクトリメソッドが実行される時間を `timeout` オプションで設定できます。デフォルトでは、Bentocacheは0msのソフトタイムアウトを設定しており、常に古いデータを返しながらバックグラウンドでデータを再取得します。
+`timeout` オプションでfactoryメソッドの最大実行時間を設定できます。デフォルトは0ms（常に古いデータを返しつつ裏で再取得）。
 
 ```ts
 import cache from '@adonisjs/cache/services/main'
@@ -159,9 +186,9 @@ cache.getOrSet({
 })
 ```
 
-上記の例では、ファクトリメソッドは最大200ms実行されます。ファクトリメソッドが200msを超えると、古いデータがユーザーに返されますが、ファクトリメソッドはバックグラウンドで実行され続けます。
+この例では、factoryメソッドは最大200msまで実行されます。超過した場合は古いデータを返し、裏でfactoryメソッドが継続します。
 
-`grace` 期間を定義していない場合でも、ハードタイムアウトを使用して一定時間後にファクトリメソッドの実行を停止できます。
+`grace` を定義しない場合でも、`hardTimeout` でfactoryメソッドの実行を強制終了できます。
 
 ```ts
 import cache from '@adonisjs/cache/services/main'
@@ -177,45 +204,44 @@ cache.getOrSet({
 })
 ```
 
-この例では、ファクトリメソッドは200ms後に停止され、エラーがスローされます。
+この場合、200ms経過でfactoryメソッドは停止し、エラーがスローされます。
 
 :::note
 
-`timeout` と `hardTimeout` を一緒に定義できます。`timeout` はファクトリメソッドが古いデータを返す前に実行される最大時間であり、`hardTimeout` はファクトリメソッドが停止されるまでの最大時間です。
+`timeout` と `hardTimeout` は同時に指定可能です。`timeout` は古いデータを返すまでの最大時間、`hardTimeout` はfactoryメソッドの最大実行時間です。
 
 :::
 
 ## キャッシュサービス
 
-`@adonisjs/cache/services/main` からエクスポートされるキャッシュサービスは、`config/cache.ts` で定義された設定を使用して作成された [BentoCache](https://bentocache.dev/docs/named-caches) クラスのシングルトンインスタンスです。
+`@adonisjs/cache/services/main` からエクスポートされるキャッシュサービスは、`config/cache.ts` の設定を使って作成された [BentoCache](https://bentocache.dev/docs/named-caches) クラスのシングルトンインスタンスです。
 
-キャッシュサービスをアプリケーションにインポートして、キャッシュと対話するために使用できます：
+アプリケーション内でインポートして利用できます。
 
 ```ts
 import cache from '@adonisjs/cache/services/main'
 
 /**
- * `use` メソッドを呼び出さない場合、キャッシュサービスで呼び出すメソッドは
- * `config/cache.ts` で定義されたデフォルトストアを使用します。
+ * `use` メソッドを呼ばなければ、デフォルトストア（config/cache.tsで定義）を利用します。
  */
 cache.put({ key: 'username', value: 'jul', ttl: '1h' })
 
 /**
- * `use` メソッドを使用して、`config/cache.ts` で定義された別のストアに切り替えることができます。
+ * `use` メソッドで、config/cache.tsで定義した他のストアを利用できます。
  */
 cache.use('dynamodb').put({ key: 'username', value: 'jul', ttl: '1h' })
 ```
 
-利用可能なすべてのメソッドはこちらで確認できます： [BentoCache API](https://bentocache.dev/docs/methods)。
+利用可能なメソッド一覧: [BentoCache API](https://bentocache.dev/docs/methods)
 
 ```ts
 await cache.namespace('users').set({ key: 'username', value: 'jul' })
-await cache.namespace('users').get('username')
+await cache.namespace('users').get({ key: 'username' })
 
-await cache.get('username')
+await cache.get({ key: 'username' })
 
-await cache.set('username', 'jul')
-await cache.setForever('username', 'jul')
+await cache.set({key: 'username', value: 'jul' })
+await cache.setForever({ key: 'username', value:'jul' })
 
 await cache.getOrSet({
   key: 'username',
@@ -223,37 +249,58 @@ await cache.getOrSet({
   ttl: '1h',
 })
 
-await cache.has('username')
-await cache.missing('username')
+await cache.has({ key: 'username' })
+await cache.missing({ key: 'username' })
 
-await cache.pull('username')
+await cache.pull({ key: 'username' })
 
-await cache.delete('username')
-await cache.deleteMany(['products', 'users'])
+await cache.delete({ key: 'username' })
+await cache.deleteMany({ keys: ['products', 'users'] })
+await cache.deleteByTag({ tags: ['products', 'users'] })
 
 await cache.clear()
 ```
 
 ## Edgeヘルパー
 
-`cache` サービスはビュー内でエッジヘルパーとして利用できます。テンプレート内でキャッシュされた値を直接取得するために使用できます。
+`cache` サービスはEdgeテンプレート内でも利用できます。テンプレート内でキャッシュ値を直接取得できます。
 
 ```edge
 <p>
-  こんにちは {{ await cache.get('username') }}
+  Hello {{ await cache.get('username') }}
 </p>
 ```
 
 ## Aceコマンド
 
-`@adonisjs/cache` パッケージは、ターミナルからキャッシュと対話するための一連のAceコマンドも提供します。
+`@adonisjs/cache` パッケージは、ターミナルからキャッシュ操作できるAceコマンドも提供します。
 
 ### cache:clear
 
-指定されたストアのキャッシュをクリアします。指定されていない場合は、デフォルトのストアをクリアします。
+指定したストアのキャッシュをクリアします。未指定の場合はデフォルトストアをクリアします。
 
 ```sh
+# デフォルトキャッシュストアをクリア
 node ace cache:clear
+
+# 特定のキャッシュストアをクリア
 node ace cache:clear redis
-node ace cache:clear dynamodb
+
+# 特定の名前空間をクリア
+node ace cache:clear store --namespace users
+
+# 複数のタグをクリア
+node ace cache:clear store --tags products --tags users
+```
+
+### cache:delete
+
+指定したストアから特定のキャッシュキーを削除します。未指定の場合はデフォルトストアから削除します。
+
+```sh
+# 特定のキャッシュキーを削除
+node ace cache:delete cache-key
+
+# 特定のストアからキャッシュキーを削除
+node ace cache:delete cache-key store
 ```

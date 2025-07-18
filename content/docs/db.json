@@ -115,7 +115,7 @@
   },
   {
     "permalink": "concepts/hot-module-replacement",
-    "title": "HMR",
+    "title": "Hot module replacement",
     "contentPath": "./concepts/hmr.md",
     "category": "コンセプト"
   },

@@ -213,7 +213,7 @@ export default defineConfig({
     bcrypt: drivers.bcrypt({
       rounds: 10,
       saltSize: 16,
-      version: '2b'
+      version: 98
     })
   }
 })
@@ -257,7 +257,7 @@ version
 
 <dd>
 
-ハッシュアルゴリズムのバージョンです。サポートされている値は`2a`と`2b`です。最新バージョンである`2b`を使用することを推奨します。
+ハッシュアルゴリズムのバージョンです。サポートされている値は`97`と`98`です。最新バージョンである`98`の使用を推奨します。
 
 </dd>
 

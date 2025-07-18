@@ -91,19 +91,25 @@ test.group('ユーザーリスト', () => {
 ### スキーマの登録
 AdonisJSには、コードからOpen APIスキーマファイルを生成するためのツールは提供されていません。スキーマを手動で作成するか、グラフィカルツールを使用して作成することができます。
 
-スペックファイルがある場合は、`resources`ディレクトリ（存在しない場合は作成）に保存し、`tests/bootstrap.ts`ファイル内の`assert`プラグインで登録します。
+スキーマファイルを用意したら、`resources`ディレクトリ（存在しない場合は作成してください）に保存し、`tests/bootstrap.ts`ファイル内で`openapi-assertions`プラグインに登録します。
+
+```sh
+npm i -D @japa/openapi-assertions
+```
 
 ```ts
 // title: tests/bootstrap.ts
 import app from '@adonisjs/core/services/app'
+// highlight-start
+import { openapi } from '@japa/openapi-assertions'
+// highlight-end
 
 export const plugins: Config['plugins'] = [
+  assert(),
   // highlight-start
-  assert({
-    openApi: {
-      schemas: [app.makePath('resources/open_api_schema.yaml')]
-    }
-  }),
+  openapi({
+    schemas: [app.makePath('resources/open_api_schema.yaml')]
+  })
   // highlight-end
   apiClient(),
   pluginAdonisJS(app)
@@ -150,7 +156,7 @@ await client
 ```ts
 await client
   .get('/users')
-  .witEncryptedCookie('user_preferences', { limit: 10 })
+  .withEncryptedCookie('user_preferences', { limit: 10 })
 ```
 
 ```ts

@@ -497,12 +497,8 @@ import { defineConfig } from '@adonisjs/inertia'
 
 export default defineConfig({
   sharedData: {
-    // 👇 すべてのビューで使用できます
-    appName: 'My App' ,
-    // 👇 現在のリクエストに対してスコープが限定されます
-    user: (ctx) => ctx.auth?.user, 
-    // 👇 現在のリクエストに対してスコープが限定されます
-    errors: (ctx) => ctx.session.flashMessages.get('errors'),
+    appName: 'My App' , // 👈 すべてのビューで使用できます
+    user: (ctx) => ctx.auth?.user, // 👈 現在のリクエストに対してスコープが限定されます
   },
 })
 ```
@@ -548,7 +544,7 @@ export default class UsersController {
       // 最初の訪問時には含まれません。
       // 部分的な再読み込み時にオプションで含まれます。
       // 必要な時にのみ評価されます。
-      users: inertia.lazy(() => User.all())
+      users: inertia.optional(() => User.all())
     }),
   }
 }
@@ -596,7 +592,7 @@ Vueを使用している場合、`defineProps`で各プロパティを手動で�
 
 ```vue
 <script setup lang="ts">
-import { InferPageProps } from '@adonisjs/inertia'
+import { InferPageProps } from '@adonisjs/inertia/types'
 
 defineProps<{
   // 👇 各プロパティを手動で定義する必要があります

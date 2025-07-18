@@ -27,7 +27,7 @@ node ace build
 アプリケーションのデプロイにDockerを使用している場合、次の`Dockerfile`を使用してDockerイメージを作成できます。
 
 ```dockerfile
-FROM node:20.12.2-alpine3.18 AS base
+FROM node:22.16.0-alpine3.22 AS base
 
 # All deps stage
 FROM base AS deps
