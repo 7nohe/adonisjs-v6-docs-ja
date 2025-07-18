@@ -309,7 +309,7 @@ emitter.on('authorization:finished', (event) => {
 
 ## cache\:cleared
 
-The event is dispatched by the `@adonisjs/cache` package after the cache has been cleared using the `cache.clear` method.
+`@adonisjs/cache`パッケージは、`cache.clear`メソッドを使用してキャッシュがクリアされた後にこのイベントを発行します。
 
 ```ts
 import emitter from '@adonisjs/core/services/emitter'
@@ -321,7 +321,7 @@ emitter.on('cache:cleared', (event) => {
 
 ## cache\:deleted
 
-The event is dispatched by the `@adonisjs/cache` package after a cache key has been deleted using the `cache.delete` method.
+`@adonisjs/cache`パッケージは、`cache.delete`メソッドを使用してキャッシュキーが削除された後にこのイベントを発行します。
 
 ```ts
 import emitter from '@adonisjs/core/services/emitter'
@@ -333,7 +333,8 @@ emitter.on('cache:deleted', (event) => {
 
 ## cache\:hit
 
-The event is dispatched by the `@adonisjs/cache` package when a cache key is found in the cache store.
+`@adonisjs/cache`パッケージは、キャッシュキーがキャッシュストアに見つかったときにこのイベントを発行します。
+
 
 ```ts
 import emitter from '@adonisjs/core/services/emitter'
@@ -346,7 +347,7 @@ emitter.on('cache:hit', (event) => {
 
 ## cache\:miss
 
-The event is dispatched by the `@adonisjs/cache` package when a cache key is not found in the cache store.
+`@adonisjs/cache`パッケージは、キャッシュキーがキャッシュストアに見つからなかったときにこのイベントを発行します。
 
 ```ts
 import emitter from '@adonisjs/core/services/emitter'
@@ -358,7 +359,7 @@ emitter.on('cache:miss', (event) => {
 
 ## cache\:written
 
-The event is dispatched by the `@adonisjs/cache` package after a cache key has been written to the cache store.
+`@adonisjs/cache`パッケージは、キャッシュキーがキャッシュストアに書き込まれた後にこのイベントを発行します。
 
 ```ts
 import emitter from '@adonisjs/core/services/emitter'
