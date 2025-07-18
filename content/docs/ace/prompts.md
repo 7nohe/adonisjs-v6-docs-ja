@@ -168,7 +168,7 @@ export default class GreetCommand extends BaseCommand {
 
 ```ts
 {
-  format(value) {
+  validate(value) {
     return value.length > 6
     ? true
     : 'モデル名は6文字である必要があります'

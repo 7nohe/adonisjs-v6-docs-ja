@@ -178,7 +178,10 @@ export default class extends BaseSchema {
 ## トークンの発行
 アプリケーションに応じて、ログイン時またはログイン後にトークンを発行する場合があります。いずれの場合でも、トークンを発行するためにはユーザーオブジェクト（トークンが生成されるユーザー）が必要であり、`User`モデルを直接使用して生成できます。
 
-次の例では、**idでユーザーを検索**し、`User.accessTokens.create`メソッドを使用してアクセストークンを発行しています。もちろん、実際のアプリケーションでは、このエンドポイントは認証によって保護されているでしょうが、今はシンプルにしておきましょう。
+
+アクセストークンをユーザーのサインイン／サインアウトの主な手段として利用する場合は、認証ガード経由で直接トークンの発行や無効化を行う方法（[Logging in and out](#logging-in-and-out)参照）が便利です。
+
+以下の例では、**idでユーザーを検索し**、`User.accessTokens.create`メソッドを使って**アクセストークンを発行**しています。実際のアプリケーションではこのエンドポイントは認証で保護するのが一般的ですが、ここではシンプルに説明しています。
 
 `.create`メソッドはUserモデルのインスタンスを受け入れ、[AccessToken](https://github.com/adonisjs/auth/blob/main/modules/access_tokens_guard/access_token.ts)クラスのインスタンスを返します。
 
@@ -188,7 +191,7 @@ export default class extends BaseSchema {
 import router from '@adonisjs/core/services/router'
 import User from '#models/user'
 
-router.post('users/:id/tokens', ({ params }) => {
+router.post('users/:id/tokens', async ({ params }) => {
   const user = await User.findOrFail(params.id)
   const token = await User.accessTokens.create(user)
 
@@ -202,7 +205,7 @@ router.post('users/:id/tokens', ({ params }) => {
 また、レスポンスで`token`を直接返すこともできます。これにより、次のJSONオブジェクトにシリアル化されます。
 
 ```ts
-router.post('users/:id/tokens', ({ params }) => {
+router.post('users/:id/tokens', async ({ params }) => {
   const user = await User.findOrFail(params.id)
   const token = await User.accessTokens.create(user)
 
@@ -489,3 +492,71 @@ await User.accessTokens.delete(user, token.identifier)
 
 ## イベント
 アクセストークンガードで発行される利用可能なイベントのリストを表示するには、[イベントリファレンスガイド](../references/events.md#access_tokens_authauthentication_attempted)を参照してください。
+
+## Logging in and out
+
+アクセストークンは、ユーザーのサインインやサインアウトの主要な手段として利用されることがあります。たとえば、ネイティブアプリの認証時などです。
+
+このような状況に対応するため、アクセストークンガードは[セッションガード](./session_guard.md)の[login](./session_guard.md#performing-login)や[logout](./session_guard.md#performing-logout)メソッドと似たAPIを提供しています。
+
+ログイン:
+
+```ts
+const token = await auth.use('api').createToken(user)
+```
+
+ログアウト（現在認証中のトークンを無効化）:
+
+```ts
+await auth.use('api').invalidateToken()
+```
+
+### Session controller example
+
+
+アクセストークンガード（例: `api`）がすでに設定されている（[ユーザーモデル](#configuring-the-user-model)、[アクセストークン](#creating-the-access-tokens-database-table)、[認証ガード](#configuring-the-guard)のセットアップ済み）ことを前提に、セッションコントローラは次のように実装できます。
+
+```ts
+// title: app/controllers/session_controller.ts
+import User from '#models/user'
+import { HttpContext } from '@adonisjs/core/http'
+
+export default class SessionController {
+  async store({ request, auth, response }: HttpContext) {
+    const { email, password } = request.only(['email', 'password'])
+    const user = await User.verifyCredentials(email, password)
+
+    return await auth.use('api').createToken(user)
+  }
+
+  async destroy({ request, auth, response }: HttpContext) {
+    await auth.use('api').invalidateToken()
+  }
+}
+```
+
+```ts
+// title: start/routes.ts
+import router from '@adonisjs/core/services/router'
+
+const SessionController = () => import('#controllers/session_controller')
+
+router.post('session', [SessionController, 'store'])
+router.delete('session', [SessionController, 'destroy'])
+  .use(middleware.auth({ guards: ['api'] }))
+```
+
+:::warning
+
+`User.verifyCredentials`が失敗した場合（[E_INVALID_CREDENTIALS](../references/exceptions#e_invalid_credentials)がスローされる）、適切なレスポンスを得るために[コンテントネゴシエーション](../authentication/verifying_user_credentials.md#handling-exceptions)を利用してください。
+
+上記の例では、クライアントは`/session`へのPOSTリクエスト時に`Accept=application/json`ヘッダーを含めるべきです。これにより、失敗時にリダイレクトではなくJSON形式のレスポンスが返されます。
+
+:::
+
+:::tip
+
+モバイルアプリなど外部からアクセストークンでサインインする場合、[CSRF保護](../security/securing_ssr_applications.md#csrf-protection)を無効化したいことがあります。
+アプリ全体をAPIとして利用する場合はグローバルにCSRF保護を無効化するか、APIルート（`/session`ルートを含む）に例外を追加してください。詳細は[shieldの設定リファレンス](https://docs.adonisjs.com/guides/security/securing-ssr-applications#config-reference)を参照してください。
+
+:::

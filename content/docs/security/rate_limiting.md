@@ -4,7 +4,7 @@ summary: '`@adonisjs/limiter`パッケージを使用して、ウェブアプリ
 
 # レート制限
 
-AdonisJSは、ウェブアプリケーションやAPIサーバーでレート制限を実装するための第一パーティパッケージを提供しています。レート制限は、`redis`、`mysql`、`postgresql`、`memory`をストレージオプションとして提供し、[カスタムストレージプロバイダの作成](#カスタムストレージプロバイダの作成)も可能です。
+AdonisJSは、ウェブアプリケーションやAPIサーバーでレート制限を実装するための第一パーティパッケージを提供しています。レート制限は、`redis`、`mysql`、`postgresql`、 `sqlite`、`memory`をストレージオプションとして提供し、[カスタムストレージプロバイダの作成](#カスタムストレージプロバイダの作成)も可能です。
 
 `@adonisjs/limiter`パッケージは、[node-rate-limiter-flexible](https://github.com/animir/node-rate-limiter-flexible)パッケージをベースにしており、最速のレート制限APIの1つを提供し、競合状態を避けるためにアトミックインクリメントを使用しています。
 
@@ -249,7 +249,7 @@ Redis接続の状態が`ready`でない場合、レート制限リクエスト�
 
 :::note
 
-データベースストアでは、MySQLとPostgreSQLのみを使用できます。
+データベースストアでは、MySQL、PostgreSQL、SQLiteのみを使用できます。
 
 :::
 
@@ -331,7 +331,7 @@ clearExpiredByTimeout
 
 
 ## HTTPリクエストのスロットリング
-レート制限が設定された後、`limiter.define`メソッドを使用してHTTPスロットルミドルウェアを作成できます。`limiter`サービスは、`config/limiter.ts`ファイルで定義された設定を使用して作成された[LimiterManager](https://github.com/adonisjs/limiter/blob/main/src/limiter_manager.ts)クラスのシングルトンインスタンスです。
+レート制限が設定された後、`limiter.define`メソッドを使用してHTTPスロットルミドルウェアを作成できます。`limiter`サービスは、`config/limiter.ts`ファイルで定義された設定を使用して作成された[LimiterManager](https://github.com/adonisjs/limiter/blob/2.x/src/limiter_manager.ts)クラスのシングルトンインスタンスです。
 
 `start/limiter.ts`ファイルを開くと、ルートまたはルートグループに適用できる事前定義されたグローバルスロットルミドルウェアが見つかります。同様に、アプリケーション内で必要な数だけスロットルミドルウェアを作成することもできます。
 
@@ -526,7 +526,7 @@ HTTPリクエストのスロットリングと並行して、アプリケーシ�
 
 ### リミッターの作成
 
-アクションにレート制限を適用する前に、`limiter.use`メソッドを使用して[Limiter](https://github.com/adonisjs/limiter/blob/main/src/limiter.ts)クラスのインスタンスを取得する必要があります。`use`メソッドは、バックエンドストアの名前と以下のレート制限オプションを受け入れます。
+アクションにレート制限を適用する前に、`limiter.use`メソッドを使用して[Limiter](https://github.com/adonisjs/limiter/blob/2.x/src/limiter.ts)クラスのインスタンスを取得する必要があります。`use`メソッドは、バックエンドストアの名前と以下のレート制限オプションを受け入れます。
 
 - `requests`: 指定された期間に許可するリクエストの数。
 - `duration`: 秒または[時間表現](../references/helpers.md#seconds)文字列の期間。
@@ -568,7 +568,7 @@ const key = 'user_1_reports'
 /**
  * 指定されたキーでアクションを実行しようとします。
  * 結果はコールバック関数の戻り値または、コールバックが実行されなかった場合はundefinedになります。
- */ 
+ */
 const executed = reportsLimiter.attempt(key, async () => {
   await generateReport()
   return true
@@ -706,7 +706,7 @@ const requestsLimiter = limiter.use({
 /**
  * ユーザーは1分間に10リクエストを行うことができます。ただし、
  * 11番目のリクエストを送信すると、キーを30分間ブロックします。
- */ 
+ */
 await requestLimiter.consume('a_unique_key')
 
 /**
@@ -809,7 +809,7 @@ test.group('Reports', (group) => {
 ```
 
 ## カスタムストレージプロバイダの作成
-カスタムストレージプロバイダは、[LimiterStoreContract](https://github.com/adonisjs/limiter/blob/main/src/types.ts#L163)インターフェイスを実装し、以下のプロパティ/メソッドを定義する必要があります。
+カスタムストレージプロバイダは、[LimiterStoreContract](https://github.com/adonisjs/limiter/blob/2.x/src/types.ts#L163)インターフェイスを実装し、以下のプロパティ/メソッドを定義する必要があります。
 
 実装は任意のファイル/フォルダ内に記述できます。カスタムストアを作成するためには、サービスプロバイダは必要ありません。
 
@@ -858,15 +858,15 @@ export class MongoDbLimiterStore implements LimiterStoreContract {
 
   /**
    * 指定された期間キーをブロックします。
-   */ 
+   */
   async block(
     key: string | number,
     duration: string | number
   ): Promise<LimiterResponse> {}
-  
+
   /**
    * 指定されたキーの消費されたリクエスト数を設定します。明示的な期間が指定されていない場合は、設定ファイルから期間を推測する必要があります。
-   */ 
+   */
   async set(
     key: string | number,
     requests: number,
@@ -938,7 +938,7 @@ const limiterConfig = defineConfig({
 ```
 
 ### rate-limiter-flexibleドライバのラップ
-[node-rate-limiter-flexible](https://github.com/animir/node-rate-limiter-flexible?tab=readme-ov-file#docs-and-examples)パッケージから既存のドライバをラップする場合は、[RateLimiterBridge](https://github.com/adonisjs/limiter/blob/main/src/stores/bridge.ts)を使用できます。
+[node-rate-limiter-flexible](https://github.com/animir/node-rate-limiter-flexible?tab=readme-ov-file#docs-and-examples)パッケージから既存のドライバをラップする場合は、[RateLimiterBridge](https://github.com/adonisjs/limiter/blob/2.x/src/stores/bridge.ts)を使用できます。
 
 今度はブリッジを使用して同じ`MongoDbLimiterStore`を再実装してみましょう。
 

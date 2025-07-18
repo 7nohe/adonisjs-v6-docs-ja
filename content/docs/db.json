@@ -115,7 +115,7 @@
   },
   {
     "permalink": "concepts/hot-module-replacement",
-    "title": "HMR",
+    "title": "Hot module replacement",
     "contentPath": "./concepts/hmr.md",
     "category": "コンセプト"
   },
@@ -390,6 +390,12 @@
     "category": "テスト"
   },
   {
+    "permalink": "digging-deeper/cache",
+    "title": "Cache",
+    "contentPath": "./digging_deeper/cache.md",
+    "category": "Digging deeper"
+  },
+  {
     "permalink": "digging-deeper/drive",
     "title": "Drive",
     "contentPath": "./digging_deeper/drive.md",
@@ -432,15 +438,15 @@
     "category": "さらに深く"
   },
   {
-    "permalink": "digging-deeper/transmit",
-    "title": "Transmit",
-    "contentPath": "./digging_deeper/transmit.md",
-    "category": "さらに深く"
-  },
-  {
     "permalink": "digging-deeper/repl",
     "title": "REPL",
     "contentPath": "./digging_deeper/repl.md",
+    "category": "さらに深く"
+  },
+  {
+    "permalink": "digging-deeper/transmit",
+    "title": "Transmit",
+    "contentPath": "./digging_deeper/transmit.md",
     "category": "さらに深く"
   },
   {

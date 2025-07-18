@@ -373,7 +373,7 @@ router
 // title: start/routes.ts
 router
   .group(() => {
-    route
+    router
       .get('users', () => {})
       .as('users.index') // 最終的な名前 - api.users.index
   })
@@ -387,13 +387,13 @@ router
 // title: start/routes.ts
 router
   .group(() => {
-    route
+    router
       .get('users', () => {})
       .as('users.index') // api.users.index
 
     router
       .group(() => {
-        route
+        router
           .get('payments', () => {})
           .as('payments.index') // api.commerce.payments.index
       })

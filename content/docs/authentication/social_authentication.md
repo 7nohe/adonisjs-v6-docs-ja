@@ -317,7 +317,7 @@ const user = await ally
 ```
 
 ## ステートレス認証
-多くのOAuthプロバイダは、[CSRFステートトークンの使用を推奨しています](https://developers.google.com/identity/openid-connect/openid-connect?hl=en#createxsrftoken)。これにより、アプリケーションがリクエスト偽造攻撃から保護されます。
+多くのOAuthプロバイダは、[CSRFステートトークンの使用を推奨しています](https://developers.google.com/identity/openid-connect/openid-connect?hl=en#createxsrftoken)。これにより、アプリケーションがCSRF攻撃から保護されます。
 
 AllyはCSRFトークンを作成し、暗号化されたクッキーに保存し、ユーザーが認証リクエストを承認した後に検証します。
 
@@ -416,7 +416,9 @@ await gh.user()
 
 :::
 
-:::disclosure{title="LinkedInの設定"}
+:::disclosure{title="LinkedInの設定（非推奨）"}
+
+この設定は、更新された[LinkedIn OAuth要件](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin)に準拠するため、非推奨となっています。
 
 ```ts
 {
@@ -427,6 +429,22 @@ await gh.user()
 
     // LinkedInの設定
     scopes: ['r_emailaddress', 'r_liteprofile'],
+  })
+}
+```
+:::
+
+:::disclosure{title="LinkedIn Openid Connect config"}
+
+```ts
+{
+  linkedin: services.linkedinOpenidConnect({
+    clientId: '',
+    clientSecret: '',
+    callbackUrl: '',
+
+    // LinkedIn specific
+    scopes: ['openid', 'profile', 'email'],
   })
 }
 ```

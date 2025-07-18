@@ -37,7 +37,7 @@ AdonisJSは[Marie Claire](https://www.marieclaire.com/)、[Cleavr](https://cleav
 
 ## 有料のサポートは提供していますか？
 
-はい！ウェブサイトで[優先サポートプログラム](https://adonisjs.com/support_program)について詳しくご覧いただけます。
+はい！ウェブサイトで[優先サポートプログラム](https://adonisjs.com/contact)について詳しくご覧いただけます。
 
 ## AdonisJSの最新情報はどのように入手できますか？
 
